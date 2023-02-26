@@ -1,0 +1,42 @@
+               javac XXX.java
+.java---------------------------------------------------------》.class
+源代码             编译                                        字节码文件
+                     java的编译器去编译                             二进制数据
+
+程序怎么输出？（Java虚拟机,英文名为Java Virtual Machine简称为JVM）
+1.编辑源代码（.java）
+2.将源代码.java编译成字节码文件.class
+3.java虚拟机对字节码文件进行解析执行输出结果。
+
+注意：在运行Java程序前，必须先安装好JDK(Java Development Kit即Java开发工具包)，JDK里面
+就包含了Javac和java工具，Java程序最终是在JVM中运行的。
+
+面试题：JDK、JRE、JVM之间的关系？
+*JDK(Java Development Kit)：Java开发工具包，提供给Java程序员使用，包含了JRE，同时还包含了
+javac与自带的调试工具Jconsole、jstack等。
+*JRE(Java Runtime Environment):Java运行时环境，包含了JVM，Java基础类库，是使用Java语言编
+写程序运行的所需环境。
+*JVM：Java虚拟机，运行Java代码。
+  JDK=JRE+开发工具集
+  JRE=JVM+Java SE标准类库
+
+如果是public class 类名一定要和文件名一样，否则会找不到文件。
+在一个Java文件中只能有一个public类。
+.class 是字节码文件 一个程序可以有多个字节码文件。
+多个字节码文件的好处：随取随用
+
+总结：
+1.一个Java文件当中，可以有若干类，但只能有一个public类，并且这个public class必须和文件名一样
+2.每个类当中，都存在方法
+class XXX{
+
+}
+3.编写和运行第一个Java程序时，可能遇到的一些错误
+(1).源文件名后缀不是.java
+(2).类名与文件名不一致
+(3).main方法名字写错：mian
+(4).类没有使用public修饰
+(5).方法中语句没有以分号结尾
+(6).中文格式的符号
+(7).JDK环境没有配置好，操作系统不能识别javac或者java命令。
+

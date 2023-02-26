@@ -1,0 +1,74 @@
+Java中的注释主要分为以下三种：
+*单行注释：//注释内容(用的最多)
+*多行注释：/*注释内容*/(不推荐)
+*文档注释：/**文档注释*/(常见于方法和类之上描述方法和类的作用)可以使用 javadoc 工具软件来生
+成信息，并输出到HTML文件中。
+注意：
+1.多行注释不能嵌套使用
+2.不论是单行还是多行注释，都不参与编译，即编译之后生成的class文件中不包含注释信息
+
+/**
+* Created with IntelliJ IDEA.
+* Description:
+* User: ${USER}
+* Date: ${YEAR}-${MONTH}-${DAY}
+* Time: ${TIME}
+*/
+
+例：
+/**
+ 这个类演示了文档注释
+ @author will
+ @version v1.0.0
+ 作为HelloWorld类，入门第一个程序
+*/
+public class HelloWorld{
+/*
+多行注释：
+1.main方法是Java程序的入口方法
+2.main函数的格式是固定的，必须为public static void main(String[] args)
+*/
+
+/**
+main方法是程序的入口函数
+@param args 命令行参数
+*/
+        public static void main(String[] args){
+       //单行注释：System.out.println是Java中标准输出，会将内容输出到控制台
+                System.out.println("Hello World!");
+        }
+}
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//在cmd中，使用javadoc工具从Java源码中抽离出注释
+//-d  创建目录   myHello为目录名
+//-author 显示作者
+//-version 显示版本号
+// -encoding UTF-8 -charset UTF-8 字符集修改为UTF-8
+javadoc -d myHello  -author -version -encoding UTF-8 -charset UTF-8 HelloWorld.java
+           目录名
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+javadoc 工具软件识别以下标签：
+标签	                                    描述	                                                             示例
+@author	                              标识一个类的作者	                                                        @author description
+@deprecated                      指名一个过期的类或成员	                                      @deprecated description
+{@docRoot}	                指明当前文档根目录的路径	                                          Directory Path
+@exception	              标志一个类抛出的异常	                                    @exception exception-name explanation
+{@inheritDoc}	                从直接父类继承的注释	                    Inherits a comment from the immediate surperclass.
+{@link}	                               插入一个到另一个主题的链接	                                                              {@link name text}
+{@linkplain}	插入一个到另一个主题的链接，但是该链接显示纯文本字体	                                Inserts an in-line link to another topic.
+@param	                                 说明一个方法的参数	                                                        @param parameter-name explanation
+@return	                                    说明返回值类型	                                                                  @return explanation
+@see	                                     指定一个到另一个主题的链接	                                                  @see anchor
+@serial	                                     说明一个序列化属性	                                                                  @serial description
+@serialData	      说明通过writeObject( ) 和 writeExternal( )方法写的数据	                                @serialData description
+@serialField	            说明一个ObjectStreamField组件	                                                             @serialField name type description
+@since	                                    标记当引入一个特定的变化时	                                                @since release
+@throws	                            和 @exception标签一样.	                                                The @throws tag has the same meaning as
+                                                                                                                                   the @exception tag.
+{@value}	                       显示常量的值，该常量必须是static属性。	                 Displays the value of a constant, which must be a static field.
+@version	                                  指定类的版本	                                                                                  @version info
+
+————————————————
+版权声明：本文为CSDN博主「智慧浩海」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/unbelievevc/article/details/127549778

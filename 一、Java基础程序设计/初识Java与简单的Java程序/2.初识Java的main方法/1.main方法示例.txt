@@ -1,0 +1,27 @@
+代码示例：
+
+public class  HelloWorld
+{
+    public static void main(String[] args) 
+    {
+        System.out.println("Hello World!");
+    }
+}
+
+该代码输出为Hello World!
+
+通过上述代码，我们可以看到一个完整的Java程序的结构，Java程序的结构由如下三个部分组成：
+
+1.源文件(扩展名为*,java):源文件带有类的定义，类用来表示程序的一个组件，小程序或许只会有
+一个类。类的内容必须包含在花括号里面。
+
+2.类：类中带有一个或多个方法。方法必须在类的内部声明。
+
+3.方法：在方法的花括号中编写方法应该执行的语句。
+
+总结一下：类存在于源文件里，方法存在于类中，语句存在于方法中。
+
+cmd编译运行记事本编写的XXX.java文件
+先找到XXX.java的文件地址(cd 路径)，再使用javac XXX.java编译，最后输入java XXX即可运行
+出结果。
+                                                                      
