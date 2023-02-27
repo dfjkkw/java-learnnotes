@@ -1,0 +1,33 @@
+代码：
+public class HelloWorld {
+	public static void main(String[] args) {
+		System.out.println("HelloWorld");
+   	 }
+}
+通过观察上述程序可以发现，public、class以及static等颜色会发生变化，将这些具有特殊含义的标识符成为关键
+字。即：关键字是由Java语言提前定义好的，有特殊含义的标识符，或者保留字。
+
+注意：用户不能使用关键字定义标识符。
+
+在Java关键字有很多，这里列出一些，先了解一下后序再逐一详细了解。
+
+用于定义访问权限修饰符的关键字
+private     | protected  |  public
+
+用于定义类，函数，变量修饰符的关键字
+abstract   | final            |  static   |  synchronized
+
+用于定义类与类之间关系的关键字
+extends   | implements
+
+用于定义建立实例及引用实例，判断实例的关键字
+new         | this             | super    | instanceof
+
+用于异常处理的关键字
+try           | catch           | finally    |  throw    | throws
+
+用于包的关键字
+package  | import
+
+其他修饰符关键字
+native      | strictfp       | transient | volatile   | assert
