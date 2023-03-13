@@ -1,10 +1,11 @@
-1.变量：
+**变量：
 内存中一块存储区域,该区域的数据可以在同一类型的范围内不断的变化。
 
-2.语法格式：
+**语法格式：
 定义变量的语法格式为：数据类型 变量名 =初始值
 
-3.整型变量
+**整型变量
+1.整型变量
 int c=2147483647;//int类型最大值
 在Java编译器中当你赋值的字面值大于这个变量能够保存的最大值时，程序编译会报错。
 
@@ -23,7 +24,14 @@ public class Test {
     }
 }
 
-4.长整型变量
+注意事项：
+(1).int不论在何种系统下都是4个字节
+(2).推荐使用方式定义，如果没有找到合适的初始值，可以设置为0
+(3).在给变量设置初始值时，值不能超过int的表示范围，否则会导致溢出
+(4).变量在使用之前必须要赋初值，否则编译报错
+(5).int的包装类型为Integer
+
+2.长整型变量
 
 代码示例：
 public class Test {
@@ -39,8 +47,153 @@ public class Test {
 }
 
 注意：
-1.长整型变量的初始值后加L或者l;
-2.长整型不论在哪个系统下都占8个字节
-3.长整型的范围：
+(1).长整型变量的初始值后加L或者l;
+(2).长整型不论在哪个系统下都占8个字节
+(3).长整型的范围：-2^(63)~2^63-1
+(4).long的包装类型为Long
 
-5.短整型变量
+3.短整型变量
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        /*短整型2个字节=》16个bite位=》-(2^15)~(2^15)-1*/
+        short a=10;
+        System.out.println(a);
+        System.out.println(Short.MAX_VALUE);
+        System.out.println(Short.MIN_VALUE);
+    }
+}
+
+注意：
+1.short在任何系统下都占2个字节
+2.short的表示范围为：-32768~32767
+3.使用时注意不要超过范围(一般使用比较少)
+4.short的包装类型为Short
+
+4.字节型变量
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        /*字符型1个字节=》8个bite位=》(-2^7)~(2^7)-1*/
+        byte a=10;
+        System.out.println(a);
+        System.out.println(Byte.MAX_VALUE);
+        System.out.println(Byte.MIN_VALUE);
+    }
+}
+
+注意：
+1.byte在任何系统下都占1个字节
+2.byte的范围是：-128~127
+3.字节的包装类型为Byte
+
+**浮点型变量
+
+1.双精度浮点型
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        /*双精度浮点型 8个字节*/
+        double a=21.4;
+        System.out.println(a);
+        System.out.println(Double.MAX_VALUE);
+        System.out.println(Double.MIN_VALUE);
+    }
+}
+
+public class Test {
+    public static void main(String[] arg)
+    {
+        double a=1.1;
+        double b=1.1;
+        System.out.println(a*b);//1.2100000000000002
+        double c=1.0;
+        double d=1.0;
+        System.out.println(c*d);//1.0
+    }
+}
+
+注意事项：
+1.double在任何系统下都占8个字节
+2.浮点数与整数在内存中的存储方式不同，不能单纯使用2^n的形式来计算
+3.double的包装类型为Double
+4.double类型的内存布局遵守IEEE754标准(和C语言一样),尝试使用有限的内存空间表示有限的内存空间表示可能无限的小数，
+势必会存在一定的精度误差，因此，浮点数是一个近似值，并不是精确值
+
+2.单精度浮点型
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        /*单精度浮点型 4个字节*/
+        float a=21.4f;//或21.4F
+        System.out.println(a);
+        System.out.println(Float.MAX_VALUE);
+        System.out.println(Float.MIN_VALUE);
+    }
+}
+
+public class Test {
+    public static void main(String[] arg)
+    {
+        int a=1;
+        int b=2;
+        System.out.println(a/b);//0
+        System.out.println(a*1.0/b);//0.5
+    }
+}
+
+注意：
+float类型在Java中占4个字节，同样遵循IEEE754标准，由于表示的数据精度范围较小，一般在工程上用到浮
+点数都优先考虑double，不太推荐使用float，float的包装类型为Float.
+
+**字符型变量
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        //字符型2个字节 16个bite位 没有负数
+        char ch='a';
+        char s='人';
+        char k=97;
+        System.out.println(ch);
+        System.out.println(s);
+        System.out.println(k);
+        //System.out.println(Character.MAX_VALUE);
+        //System.out.println(Character.MIN_VALUE);
+    }
+}
+
+注意事项：
+1.java中使用单引号加单个字母的形式表示字符字面值。
+2.计算机中的字符本质上是一个整数，在C语言中使用ASCII表示字符，而Java中使用Unicode表示字符，因此
+一个字符占两个字节，表示的字符种类更多，包括中文。
+
+**布尔型变量
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        //字符型2个字节 16个bite位
+        boolean a=true;
+        System.out.println(a);
+    }
+}
+
+站在C角度：0是假，非0是真
+站在Java角度：false是假，true是真
+注意事项：
+1.boolean类型的变量只有两种取值，false是假，true是真。
+2.Java的boolean类型和int不能相互转换，不存在1表示true，0表示false这样的用法。
+3.Java虚拟机规范中，并没有明确规定boolean占几个字节，也没有专门用来处理boolean的字节码指令，在
+Oracle公司的虚拟机实现中，boolean占一个字节。
+4.boolean的包装类型位Boolean。
