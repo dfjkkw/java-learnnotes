@@ -1,0 +1,34 @@
+c语言没有字符串类型，用字符数组或字符指针表示字符串
+char *p="hello";
+char str[]={'a','b','c'};
+char str2[]={"hello"};//"\0"结束
+Java中的字符串不是以\0结尾的
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        String s="hello";
+        System.out.println(s);//hello
+
+        int a=10;
+        int b=20;
+        System.out.println(a+b);
+        System.out.println("a="+a+" b="+b);//a=10 b=20,当字符串和整数在一起使用+的时候，就是一个拼接的意思
+        System.out.println("a="+a+b);//a=1020
+        System.out.println(a+b+"a=");//30a=
+
+        String s1="hello";
+        String s2=" world";
+        System.out.println(s1+s2);//s1+s2表式将s1,s2进行拼接,hello world
+
+        //借助方法
+        //int类型转String
+        String ret=String.valueOf(10);
+        System.out.println(ret);//10
+        //String类型转int
+        String str="1234";
+        int A=Integer.parseInt(str);
+        System.out.println(A+1);//1235
+    }
+}
