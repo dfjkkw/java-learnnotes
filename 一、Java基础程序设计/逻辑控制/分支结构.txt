@@ -1,0 +1,106 @@
+**分支结构
+
+#if语句
+语法格式1：
+if(布尔表达式){
+//语句
+}
+如果布尔表达式结构为true，执行if中的语句，否则不执行。
+代码示例：
+int score=92;
+if(score>=90){
+       System.out.println("吃个大鸡腿!!!");
+}
+语法格式2：
+if(布尔表达式){
+//语句
+}else{
+//语句
+}
+如果布尔表达式结构为true，执行if中的语句，否则执行else中的语句。
+代码示例：
+int score=92;
+if(score>=90){
+       System.out.println("吃个大鸡腿!!!");
+}else{
+      System.out.println("给你个大嘴巴子!!!");
+}
+语法格式3：
+if(布尔表达式){
+//语句
+}else if(布尔表达式){
+//语句
+}else{
+//语句
+}
+代码示例：
+import java.util.Scanner;
+public class Test {
+    public static void main(String[] args) {
+        //声明部分
+        int score;
+        String level;
+        Scanner sc = new Scanner(System.in);
+        //输入部分
+        System.out.print("score = ");
+        score = sc.nextInt();
+        level = "";
+        if (score > 100) level = "超出范围";
+        if (score >= 90 && score <= 100) level = "优秀";
+        if (score >= 80 && score <= 90) level = "良好";
+        if (score >= 70 && score <= 80) level = "中等" ;
+        if (score >= 60 && score <= 70) level = "及格";
+        if (score >= 0 && score <= 60) level = "不及格";
+        if (score < 100) level = "超出范围";
+
+        //输出部分
+        System.out.println(level);
+        }
+}
+
+#switch语句
+基本语法：
+switch(表达式){
+	case 常量值1：{语句1；break;}
+	case 常量值2：{语句2；break;}
+	case 常量值3：{语句3；break;}
+	······
+	default:{内容都不满足时执行语句;break;}
+}
+
+执行流程：
+1、先计算表达式的值。
+2、和case依次比较，一旦有响应的匹配就执行该项下的语句，直到遇到break时结束。
+3、当表达式的值没有与所列项匹配时，执行default。
+代码示例：根据day的值输出星期
+public class Main{
+    public static void main(String[] args) {
+        int a=1;
+        switch(a){
+            case 1:
+                System.out.println("星期一");break;
+            case 2:
+                System.out.println("星期二");break;
+            case 3:
+                System.out.println("星期三");break;
+            case 4:
+                System.out.println("星期四");break;
+            case 5:
+                System.out.println("星期五");break;
+            case 6:
+                System.out.println("星期六");break;
+            case 7:
+                System.out.println("星期日");break;
+            default:
+                System.out.println("输入错误!");break;
+        }
+    }
+}
+
+switch不能表达复杂的条件
+//例如：如果num的值在10~20之间，就打印haha
+//这样的代码用if很容易表达，但是使用switch就无法表示
+if(num>10&&num<20)
+{
+	System.out.println("haha");
+}

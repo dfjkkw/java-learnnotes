@@ -1,0 +1,289 @@
+**什么是运算符
+
+作为一门计算机语言，Java也提供了一套丰富的运算符来操纵变量，Java中运算符可分为以下：算术运算
+符(+,-,*,/)，关系运算符(>,<,==)，逻辑运算符，位运算符，移位运算符以及条件运算符。
+
+**算术运算符
+
+1.基本四则运算符：加减乘除(+,-,*,/)
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        System.out.println(5/2);//2 整数除法
+        System.out.println(5.0/2);//2.5 小数除法
+        System.out.println(5/2.0);//2.5 小数除法
+        System.out.println((float)5/2);//2.5 小数除法
+        System.out.println(5/(float)2);//2.5 小数除法
+        System.out.println((float)(5/2));//2.0 先整数除法再强转浮点数
+        //System.out.println(10/0);//ArithmeticException算数异常
+
+        System.out.println(10%3);//1
+        System.out.println(-10%3);//-1
+        System.out.println(10%-3);//1
+        System.out.println(-10%-3);//-1
+        System.out.println(12.5%10.5);//2.0
+        System.out.println(-12.5%10.5);//-2.0
+        System.out.println(12%10.5);//1.5
+
+        System.out.println(1+0.2);//1.2
+    }
+}
+
+注意：
+(1).都是二元运算符，使用时必须有左右两个操作数。
+(2).int/int结果还是int类型，而且会向下取整。
+(3).做除法和取模时，右操作数不能为0。
+(4).%不仅可以对整数取模，也可以对double类型取模，但是没有意义，一般都是对整型取模的。
+(5).两侧操作数类型不一致时，向类型大的提升。
+
+2.增量运算符+=、-=、*=、%=
+
+该种类型运算符操作完成后，会将操纵的结果赋值给左操作数。
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        int a=10;
+        //a=a+1;//11
+        a+=1;
+        System.out.println(a);
+
+        double d=12.5;//a=11
+        a+=d;//23  自动将类型转换
+        System.out.println(a);
+    }
+}
+
+注意：只有变量才能使用该运算符，常量不能使用。
+
+3.自增/自减运算符++、--
+
+(++)是给变量的值+1，(--)是给变量的值-1。
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        int a=10;
+        int b=a++;//b=a;a=a+1;
+        a=10;
+        int c=++a;//a=a+1;c=a;
+        System.out.println(b);//10
+        System.out.println(c);//11
+        System.out.println(a);//11
+
+        a=10;
+        a=a++;
+        System.out.println(a);//10
+    }
+}
+
+注意：
+(1).如果单独使用，【前置++】和【后置++】没有任何区别
+(2).如果混合使用，【前置++】先+1，然后使用变量+1的值，【后置++】先使用变量原来的值，表达式结束
+时给变量+1。
+(3).只有变量才能使用自增/自减运算符，常量不能使用，因为常量不允许被修改。
+
+**关系运算符
+
+关系运算符主要有六个:==、!=、<、>、<=、>=，其计算结果为true或者false。
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        int a=10;
+        int b=12;
+        System.out.println(a>b);//false
+        System.out.println(a<b);//true
+        System.out.println(a>=b);//false
+        System.out.println(a<=b);//true
+    }
+}
+
+注意：
+当需要多次判断时，不能连着写，比如：3<a<5，Java程序与数学中是有区别的。
+
+**逻辑运算符(重点)
+
+逻辑运算符主要有三个：&&、||、！，运算结果都是boolean类型
+
+1.逻辑与&&
+
+语法规则：布尔表达式&&布尔表达式。
+两个表达式都为真，结果才是真，否则为假。
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        int a=10;
+        int b=12;
+        System.out.println(a>1&&b>1);//真  真  true
+        System.out.println(a==10&&b==10);//真  假  false
+        System.out.println(a<1&&b>1);//假  真  false
+        System.out.println(a<1&&b<1);//假  假  false
+    }
+}
+
+2.逻辑或||
+
+语法规则：布尔表达式||布尔表达式。
+两个表达式都为假，结果才是假，否则为真。
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        int a=10;
+        int b=12;
+        System.out.println(a>1||b>1);//真  真  true
+        System.out.println(a==10||b==10);//真  假  true
+        System.out.println(a<1||b>1);//假  真  true
+        System.out.println(a<1||b<1);//假  假  false
+    }
+}
+
+3.逻辑非！
+
+语法规则：!布尔表达式。
+表达式为真，结果为假；表达式为假，结果为真。
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        int a=10;
+        System.out.println(!(a==10));//真  false
+        System.out.println(!(a<1));//假    true
+    }
+}
+
+4.短路求值
+
+&&和||遵守短路求值的规则
+
+注意：
+(1).对于&&，如果左侧表达值为false，则表达式结果一定是false，无需计算右侧表达式。
+(2).对于||，如果左侧表达值为true，则表达式结果一定是true，无需计算右侧表达式。
+(3).&和|如果表达式结果为boolean时，也表示逻辑运算，但与&&和||相比，它们不支持短路求值。
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        //System.out.println(10>20&10/0==0);//程序抛出异常
+        //System.out.println(10<20|10/0==0);//程序抛出异常
+        System.out.println(10<20|10>0);//true
+    }
+}
+
+**位运算符(位运算操作数只能为整型或字符型数据)
+
+位运算符主要有4个：&、|、~、^，除~是一元运算符，其余都是二元运算符。
+
+位运算表示按二进制位运算，计算机中都是使用二进制来表示数据的(01构成的序列)，按位运算就是在按照二进制位
+的每一位依次进行运算。
+
+1.按位与&:如果两个二进制位都是1，否则结果为0.
+
+2.位或 | 用两个整数进行运算.两个整数写成二进制，在两数的同一位上，如果都为0，该位应当置0；若任一该数位为1，则该置1.
+
+3.位异或 ^ 用两个整数进行运算.两个整数写成二进制，在两数的同一位上，如果不同，该位应当置1；若两个都为1或两个都为0，则该置0.
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        int a=10;
+        int b=20;
+        System.out.println(a&b);//0
+        System.out.println(a|b);//30
+        System.out.println(a^b);//30
+        System.out.println(a>>1);//5
+        System.out.println(a<<1);//20
+    }
+}
+
+**移位运算
+
+2.位右移 >>将一个整数按照二进制写法每一位向右移动，得到一个新的数，最右位被舍弃
+
+例：16 ：0001 0000
+0001 0000>>1=0000 1000 8->16/2^1
+0001 0000>>2=0000 0100 4->16/2^2
+
+3.位左移 <<将一个整数按照二进制写法每一位向左移动，得到一个新的数，最后一位加0
+
+例：4：0000 0100
+0000 0100<<1=0000 1000 8->4*2^1
+0000 0100<<2=0001 0000 16->4*2^2
+
+无符号右移：
+
+例：1111 1111>>>1=0111 1111
+
+没有无符号左移。
+
+注意：
+(1).左移1位，相当于原数字*2，左移N位，相当于原数字*2的N次方。
+(2).右移1位，相当于原数字/2，右移N位，相当于原数字/2的N次方。
+(3).由于计算机计算移位效率高于计算乘除，当某个代码正好乘除2的N次方的时候可以用移位运算代替。
+(4).移动负数位或者移位位数过大都没有意义。
+
+**条件运算符
+
+条件运算符只有一个：
+表达式1？表达式2：表达式3；
+当表达式1的值为true时，整个表达式的值为表达式2的值；
+当表达式1的值为false时，整个表达式的值为表达式3的值；
+也是Java中唯一的一个三目运算符，是条件判断语句的简化写法。
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        int a=10;
+        int b=20;
+        double c=a>b?1:1.2;
+        System.out.println(c);
+        //a>b?1:1.2;//报错
+    }
+}
+
+注意：
+(1).表达式2和表达式3的结果要是同类型的，除非能发生类型隐式类型转换。
+(2).表达式不能单独存在，其产生的结果必须要被使用。
+**运算符的优先级
+
+在一些表达式中，各个运算符可以混合起来进行运算，但是运算符的优先级不同，比如：*和/的优先级要高于+
+和-，有些情况下稍不注意，可能就会造成很大的麻烦。
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        int a=10;
+        int b=20;
+        int c=a+(b-a)>>1;
+        System.out.println(c);//10
+    }
+}
+
+上述表达式中，由于+的优先级要高于>>,因此a先和b-a的结果做加法，整体为20，最后再进行右移，因此
+结果为10.
+注意：运算符之间是有优先级的，具体的规则我们不必记忆，在可能存在歧义的代码中加上括号即可。
+
+代码示例：
+public class Test {
+    public static void main(String[] arg)
+    {
+        int a=10;
+        int b=20;
+        int c=a+((b-a)>>1);
+        System.out.println(c);//15
+    }
+}

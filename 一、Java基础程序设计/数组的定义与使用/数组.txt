@@ -1,0 +1,336 @@
+**数组(基本定义)
+
+##为什么要使用数组?
+
+----int[] array={1,2,3};//下标从0开始，从n-1结束
+
+----定义：数组是一块连续的存储空间，存储的使相同数据类型的元素
+
+##数组的创建
+
+----语法：T[] 数组名=new T[N];
+----T:表示数组中存放元素的类型
+----T[]: 表示数组的类型
+----N:表示数组的长度
+
+测试案例1：
+public class Main {
+    public static void main(String[] args) {
+        /*
+        int a1=1;
+        int a2=2;
+        int a3=3;
+         */
+        //通过数组 来组织这一些数据
+        int[] array={1,2,3};
+        float[] array2={1.0f,2.0f};
+        //int ret=array[3];
+        //System.out.println(ret);//出现数组越界异常ArrayIndexOutOfBoundsException
+        int len=array.length;//数组名，长度
+        System.out.println(len);
+
+    }
+}
+
+##数组的初始化
+
+----数组的初始化主要为动态初始化以及静态初始化
+---1.动态初始化：在创建数组时，直接指定数组中元素的个数
+---int[] array=new int[10];
+---2.静态初始化，在创建数组时不直接指定数据元素个数，而直接将具体的数据内容进行指定
+---语法格式：T[] 数组名={date1,date2,date3,······,dateN};
+---int[] array1={1,2,3};
+
+测试实例2：
+public class Main {
+    public static void main(String[] args) {
+        int[] array1={1,2,3};//直接赋值，静态初始化
+        //           new type[] {dates};
+        int[] array2=new int[]{1,2,3};//动态初始化
+        //以上两种写法没有本质的区别，只有写法上的区别，内存的分位置，堆
+
+        int[] array3=new int[10];//只是分配了内存，但是没有进行赋值，只有默认值：0
+
+        
+    }
+}
+
+##注意事项:
+----1.静态初始化虽然没有指定数组的长度，编译器在编译时会根据{}中元素个数来确定数组的长度
+----2.静态初始化时，{}中的数据类型必须与[]前数据类型一致
+----3.静态初始化可以简写，省去后面的new T[]
+----4.数组也可以按照如下C语言个数创建，不推荐
+	int arr[]={1,2,3};
+----5.静态和动态初始化也可以分为两步，但是省略格式不可以
+	int[] array3;
+	array3=new int[10];
+----如果没有对数组进行初始化，数组中元素有其默认值
+---如果数组中存储元素为基类类型，默认值为基类类型对应的默认值，比如
+类型          默认值
+byte            0
+short           0
+int             0
+long            0
+float          0.0f
+double         0.0
+char          /u0000
+boolean       false
+---如果数组中存储元素为引用类型，默认值为null
+
+##数组的使用
+
+----数组中元素的访问
+---数组在内存中是一段连续的空间，空间的编号都是从0开始，依次递增，该编号称为数组的下标，数组可以通过下标
+访问其任意位置的元素。
+
+测试实例3：
+public class Main {
+    public static void main(String[] args) {
+        int[] array=new int[]{01,20,30,40,50};
+        System.out.println(array[0]);
+        System.out.println(array[1]);
+        System.out.println(array[2]);
+        System.out.println(array[3]);
+        System.out.println(array[4]);
+        //对数组中的值进行修改
+        array[0]=99;
+        System.out.println(array[0]);
+    }
+}
+
+----注意事项：
+--1.数组是一段连续的内存空间，因此支持随机访问，即通过下标访问，快速访问数组中任意位置的元素
+--2.下标从0开始，介于(0~n)之间不包含n，n为元素个数，不能越界，否则会报出下标越界异常。
+
+--遍历数组
+
+测试实例4：
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] array=new int[]{10,20,30,40,50};
+        //可拿到数组下标
+        for(int i=0;i<array.length;i++){
+            System.out.println(array[i]);
+        }
+        System.out.println();
+        //数组当中数据的类型定义的变量:数组名   for each 增强for循环
+        //拿不到数组下标
+        for(int x:array){
+            System.out.println(x+"");
+        }
+        System.out.println();
+
+        //把数组转变为字符串，然后返回
+        String ret = Arrays.toString(array);
+        System.out.println(ret);
+    }
+}
+
+**数组（引用类型和应用场景）
+
+##数组是引用类型
+
+----初始JVM的内存分布
+---JVM主要包含几个区域：堆，栈，元数据，本地方法栈，程序计数器
+
+--1.程序计数器（pc Register）（寄存器）
+-程序计数器，相当于计算机处理器中的寄存器，是软件层面上的。
+-JVM数据区域大部分是在启动时创建，JVM停止时销毁，其中程序计数器是在一个线程启动时创建，线程完成时销毁。
+-程序计数器是一块非常小的空间（可忽略不计），它只需要记录当前指令，它是唯一在JVM中不会出现OutOfMemoryError的区域。
+-任何时间一个线程只有一个方法在执行，程序计数器会记录当前线程正在执行的方法的JVM指令地址。
+-如果是执行Native方法，则是未指定值（Undefined）
+-程序计数器的作用：cpu需要不停的切换线程，在切换到某一个线程时需要知道从哪开始继续运行。
+
+--2.Java 虚拟机栈
+-每个java线程创建时都会创建一个虚拟机栈。栈中保存的是一个个的栈帧（Stack Frame），对应着方法的一次次调用。
+-Java虚拟机栈只有栈帧的push和pop操作，遵循先进后出的原则。
+-Java的栈帧和C语言一样，拥有本地变量（局部变量），部分结果（操作数栈），方法调用（动态链接），返回结果地址。
+-Java虚拟机栈在内存上可以是不连续的。
+-Java虚拟机栈的大小不是固定的，允许通过配置来设置最小和最大容量。
+-当一个线程申请更大的栈区域，并且容量不足，会抛出StackOverflowError（栈溢出异常）；当虚拟机栈可以任意扩张大小，并且计算机内存不够，则会抛出OutOfMemoryError（内存溢出异常）
+-栈的运行原理：在一条活动的线程中，一个时间点只有一个活动的栈帧，即只有当前正在执行的方法的栈帧（栈顶栈帧）是有效的。
+-执行引擎运行的所有字节码指令只针对当前栈帧。
+-如果该方法中调用了其他方法，对应的新的栈帧会被创建出来，放在栈帧的顶端，称为新的当前栈。
+-不同线程中所包含的栈帧是不允许存在相互引用的。
+-如果当前栈帧方法调用了其他方法，方法返回之际，当前栈帧会传回此方法的执行结果给前一个栈帧，接着，虚拟机会出栈当前栈帧，使得前一个栈帧重新成为当前栈帧。
+
+--3.堆（Heap）
+-堆在jvm启动时创建，堆Heap是所有jvm线程共享的。
+-堆是JVM运行时数据存储区域，所有的类实例和数组都在堆中分配内存。
+-堆的在计算机内存中的区域可以是不连续的，但逻辑上堆是连续的。
+-垃圾回收器（自动回收管理系统），管理着堆中所有对象的回收。
+-堆的大小可以是一个固定大小，也可以根据实际运行情况扩大或者缩小，可以通过maximum and minimum来配置堆的最大最小值。
+-如果垃圾回收器（GC）回收之后仍不能提供对象存储所需的容量，JVM就会抛出内存溢出异常（OutOfMemoryError）。
+
+通常会将其实内存和最大内存设置为一样，目的是为了在GC之后不需要重新计算堆区的大小，从而提高性能。
+
+-年轻代和老年代
+年轻代分为 Eden（伊甸园）代，Survivor0（S0区）和Servivor1（S1区）有些地方也叫from区和to区
+
+--4.方法区（Method Area）
+-方法区在JVM启动时创建，关闭时释放内存。
+-方法区是所有JVM线程共享的。
+-方法区域使用栈存储jvm加载之后的类的字节码结构。
+-类的结构：javac.exe（编译器）将java文件编译成字节码文件，启动时，jvm将字节码文件加载到方法区，将字节码文件存储为运行时结构，此结构包含
+-1.类对应的字节码常量池
+-2.字段，方法数据
+-3.方法和构造函数
+
+--5.运行时常量池（Run-Time Constant Pool）
+-运行时，jvm会将class中的字节码常量池，加载到运行时常量池。
+
+-运行时常量池是唯一的，线程共享的。
+
+注意：运行时常量池位于方法区，运行时常量和类的字节码常量池不同，每个类都有自己的字节码常量池，运行时常量池只有一个，JVM会把原来Class文件
+中描述的符号引用转换成直接引用储存在运行时常量池中.常量池的存储结构可以看成一张constant_pool表（常量池表）
+
+--6.本地方法栈（Native Method Stacks）
+-本地方法就是一个Java调用非java代码的接口，该方法由非java语言实现，如C语言。
+
+-为什么使用Native Method，有时java需要与系统底层进行交互，如操作某些硬件。这些操作使用C语言更加简洁方便。
+--本地方法栈是JVM线程私有的。
+--本地方法栈和java虚拟机栈的内存溢出规则相同。
+--本地方法栈由于越来越少的使用，在某些虚拟机如Hotspot虚拟机，直接将本地方法栈JVM栈进行合并。
+
+----基本变量与引用类型变量的区别
+---1、存储位置不同；
+---2、传递方式不同；
+---3、影响不同。
+---引用类型变量是使用三种引用类型中的任意一种类型，声明出的变量。
+---三种引用类型：类类型、接口类型、数组类型。
+
+----再谈引用变量
+测试实例：
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        //a,b,array为引用变量(引用)，array这个引用执行一个对象
+        int a=10;
+        int b=20;
+        int[] array=new int[]{1,2,3,4};
+        System.out.println(Arrays.toString(array));
+
+        int[] array2=array;
+        //array2这个引用指向了array这个引用对象
+        array2[1]=99;
+        System.out.println(Arrays.toString(array));
+        System.out.println(Arrays.toString(array2));
+
+    int[] array3=new int[]{1,2,3,4};//没有引用自动回收
+        int[] array4=new int[]{4,5,6,7,8};
+        array3=array4;
+        System.out.println(Arrays.toString(array3));
+        System.out.println(Arrays.toString(array4));
+    }
+}
+
+---注意：
+--一个引用不能指向多个对象
+
+----认识null
+
+---数组定义为null代表这个引用不指向任何一个对象
+测试实例：
+public class Main {
+    public static void main(String[] args) {
+        int[] array=null;
+        System.out.println(array);
+    }
+}
+
+注意：Java中没有约定null和0号地址的内存有任何关联
+
+##数组的应用场景
+----保存数据
+测试实例：
+public class Main {
+    public static void main(String[] args) {
+        int[] array= {1,2,3,4};
+        for (int i=0;i<array.length;i++) {
+            System.out.print(array[i]+" ");
+        }
+    }
+}
+
+----作为函数的参数
+测试实例：
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] array=new int[]{1,2,3,4};
+        //func1(array);
+        func2(array);
+        System.out.println(Arrays.toString(array));
+    }
+    public static void func1(int[] array){
+        array=new int[10];
+    }
+    public static void func2(int[] array){
+        array[0]=99;
+    }
+}
+
+----作为函数的返回值
+测试实例：
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] array= func3();
+        System.out.println(Arrays.toString(array));
+    }
+    public static int[] func3(){
+        int[] tem={1,2,3,4,5,6,7};
+        return tem;
+    }
+}
+
+注意：
+1.数组对象是在堆上的
+2.引用变量目前是在main函数里面的，它属于局部变量，当函数结束就会被回收内存
+
+冒泡排序：
+public static void bubbleSort(int[] array){
+        //i控制函数
+        for(int i=0;i< array.length-1;i++){
+            //array.length-1-i 优化的是每一趟比较的次数
+            boolean flag=false;//检查某一趟是否已经有序了
+            for(int j=0;j<array.length-1-i;j++){
+                if(array[j]>array[j+1]){
+                    int temp=array[j];
+                    array[j]=array[j+1];
+                    array[j+1]=temp;
+                    flag=true;
+                }
+            }
+            if(flag==false){
+                return;
+            }
+        }
+Java内置排序：Arrays.sort(array);
+
+##二维数组
+
+----二维数组本质上也是一维数组，只不过每个元素又是一个一维数组
+
+----基本语法：
+        数据类型[][] 数组名称=new 数据类型[行数][列数]{初始化数据};
+
+测试实例：
+
+public class Main {
+    public static void main(String[] args) {
+        int[][] array={{1,2,3,4},{5,6,7,8},{9,10,11,12}};
+        for(int i=0;i< array.length;i++){
+            for(int j=0;j<array[i].length;j++){
+                System.out.print(array[i][j]+" ");
+            }
+            System.out.println();
+        }
+    }
+}
+

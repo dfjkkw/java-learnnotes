@@ -1,0 +1,77 @@
+**输出到控制台
+
+#基本语法
+System.out.println(msg);//输出一个字符串，带换行
+System.out.print(msg);//输出一个字符串，不带换行
+System.out.printlf(format,msg);//格式化输出
+
+println输出的内容自带\n,print 不带\n
+printf的格式化输出方式和C语言的printf是基本一致的
+
+代码示例:
+System.out.println("hello world!");
+
+int n=10;
+System.out.printf("n=%d\n",n);
+
+#格式化字符串
+
+转换符                 类型                       举例                      
+ d                   十进制整数                 ("%d",100)                    100
+
+ x                   十六进制整数               ("%x",100)                     64
+
+ o                   八进制整数                 ("%o",100)                    144
+
+ f                   定点浮点数                 ("%f",100)                 100.000000
+
+ e                   指数浮点数                 ("%e",100)                 1.000000e+02
+
+ g                   通用浮点数                 ("%g",100)                   100.000
+
+ a                   十六进制浮点数             ("%a",100)                    0x1,9p6
+
+ s                   字符串                     ("%s",100)                    100
+
+ c                   字符                       ("%c",1)                       1
+
+ b                   布尔值                     ("%b",100)                    true
+
+ h                   散列码                     ("%h",100)                     64
+
+ %                   百分号                    ("%.2f%%",2/7f)                0.29%
+
+**从键盘输出
+
+使用Scanner读取字符串/整数/浮点数
+import java.unil.Scanner;//需要导入util包
+
+代码示例：
+import java.util.Scanner;
+
+public class Main{
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        System.out.println("请输入你的姓名：");
+        String xm=sc.nextLine();
+        System.out.println("姓名："+xm);
+        System.out.println("请输入你的年龄：");
+        int age=sc.nextInt();
+        System.out.println("年龄："+age);
+        System.out.println("请输入你的工资：");
+        float gz=sc.nextFloat();
+        System.out.println("工资："+gz);
+        sc.close();
+    }
+
+}
+测试结果：
+请输入你的姓名：
+s d f
+姓名：s d f
+请输入你的年龄：
+12
+年龄：12
+请输入你的工资：
+234
+工资：234.0

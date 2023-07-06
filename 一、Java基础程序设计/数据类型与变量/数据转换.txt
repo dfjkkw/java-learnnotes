@@ -44,7 +44,7 @@ public class Test {
         f=(float)d;//double->float 数据范围由大到小，需要强转，否则编译失败
 
         //a=d;//不兼容的类型: 从double转换到int可能会有损失
-        a=(int)d;//double没有int表示的数据范围大，需要强转，小数点之后全部丢弃
+        a=(int)d;//int没有double表示的数据范围大，需要强转，小数点之后全部丢弃
 
         byte b1=100;// 100默认为int，没有超过byte范围，隐式转换
         //byte b3=257;//不兼容的类型: 从int转换到byte可能会有损失
