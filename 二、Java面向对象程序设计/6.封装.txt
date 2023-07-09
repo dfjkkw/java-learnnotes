@@ -1,0 +1,191 @@
+**封装的概念
+
+##（1）封装就是把属于同一类事物的共性放到一个类中，便以使用（狭义）。是指隐藏对象的属性和实现细节，仅对外公开接口和对象进行交互。
+
+----好处：将变化隔离、便于使用、提高重用性、提高安全性
+
+----封装原则：将不需要对外提供的内容都隐藏起来、把属性都隐藏，提供公共方法对其访问。
+
+##（2）一般把属性私有化（private）,方法公有化（public），除非这个方法只是希望内部调用，不希望外部调用，可以定义为私有的（private）。
+可以根据属性设置公共的getter和setter方法完成对属性的获取和赋值，同时我们可以在方法中对属性进行安全验证。（广义）
+
+----好处：将变化隔离、便于使用、提高重用性、提高安全性     
+
+----封装原则：将不需要对外提供的内容都隐藏起来、把属性都隐藏，提供公共方法对其访问。
+
+**访问限定符
+
+权限-》访问修饰限定符进行修改
+##1.private:私有的
+----private是私有的，即只能在当前类中被访问到，可以修饰构造方法，数据成员，方法成员，除外部类的其他类
+----可以被同一个类里面其他类访问；
+----不能被同一包下的类访问；
+----不能被不同包下的其他类访问；
+----不管事同一个包下的子类还是不同包下的子类也都不可以访问
+
+##2.default:默认的
+----default表示不写修饰符时，是默认值。默认为在同一个包内可以访问，包外不能访问。可以修饰类，构造方法，数据成员，方法成员。
+----可以被同一个类里面的类访问；
+----也可以被同一个包里面的类访问；
+----但是不能被不同包下的类访问，不管是子类还是非子类。
+
+##3.protected:受保护的
+----protected是受保护的，受到该类所在的包所保护。可以修饰数据成员，构造方法，方法成员，除外部类的其他类
+----可以被同一个类里面的其他类访问；
+----可以被同一个包下的类访问；
+----不能被不同包的类访问；
+----如果有不同包的类想调用它，只能通过访问重新定义它的子类来访问。
+
+##4.public:公开的
+----public为公开的，被public所修饰的成员可以在任何类中都能被访问到。可以修饰类，构造方法，数据成员，方法成员。
+----可以被同一个类里面的其他类访问；
+----可以被同一个包下的类访问；
+----可以被不同包下的类访问；
+----不管是同一包还是不同包下的子类也可以访问
+
+##5.注意
+
+----四种访问限定修饰符的大小为：public>protected>default>private
+
+**封装扩展之包
+
+##包的概念
+----包是对类、接口等的封装机制的体现，是一种对类或者接口等的很好的组织方式，比如：一个包中的类不想被其他包中的类使用。
+----包还有一个重要的作用：在同一个工程中允许存在相同名称的类，只要处在不同的包即可。
+
+##导入包中的类
+Java中已经提供了很多现成的类供我们使用，例如Date类：可以使用java.util.Date导入java.util这个包中的Date类
+测试用例：
+public class Main {
+
+    public static void main(String[] args) {
+        java.util.Date date=new java.util.Date();
+        //得到一个毫秒级别的时间戳
+        System.out.println(date.getTime());
+    }
+}
+
+但是这种写法比较麻烦一些，可以使用import语句导包
+测试实例：
+import java.util.Date;
+public class Main {
+
+    public static void main(String[] args) {
+        Date date=new Date();
+        //得到一个毫秒级别的时间戳
+        System.out.println(date.getTime());
+    }
+}
+
+如果需要util中的其他类，可以使用import java.util.*;
+测试实例：
+import java.util.*;
+public class Main {
+
+    public static void main(String[] args) {
+        Date date=new Date();
+        //得到一个毫秒级别的时间戳
+        System.out.println(date.getTime());
+    }
+}
+
+##自定义包
+基本规则：
+在文件的最上方加上一个package语句指定该代码在哪个包中
+包名需要尽量指定成唯一的名字，通常会用公司的域名的颠倒形式(如 com.bit.demo1)
+包名要和代码路径相匹配。例如创建com.bit.demo1的包，那么会存在一个对应的路径com/bit/demo1来存储代码
+如果一个类没有package语句，则该类被放到一个默认包中
+
+##包的访问权限控制举例
+
+----Example 1：同一个包下的访问
+package p1;
+public class MyClass1 {
+	public int a=5;
+	private int b=10;
+	protected int c=20;
+	int d=30;
+	public void func1() {
+		System.out.println("func1");
+	}
+	private void func2() {
+		System.out.println("func2");
+		System.out.println(b);
+	}
+	protected void func3() {
+		System.out.println("func3");
+	}
+	void func4() {
+		System.out.println("func4");
+	}
+}
+
+package p1;
+class MyClass2 {
+	public void func1() {
+		System.out.println("func1 of MyClass2");
+	}
+}
+
+package p1;
+public class Test {
+	public static void main(String[] args) {
+		MyClass1 obj1=new MyClass1();
+		System.out.println(obj1.a);//a是公共属性，任何地方都可以访问
+		//System.out.println(obj1.b);//本行代码会报错！！！b是私有属性,类MyClass1外无法访问
+		System.out.println(obj1.c);//c是受保护属性,同一个包下的类可以访问,其他包中的子类也可以访问
+		System.out.println(obj1.d);//d是缺省属性,同一个包下的类可以访问
+		//所谓缺省，就是指系统默认的方法
+		obj1.func1();//func1()是公共方法,任何地方都可以访问
+		//obj1.func2();//func2()为私有方法,类MyClass1外无法访问
+		obj1.func3();//func3()是受保护方法,同一包中的类可以访问,其他包中的子类也可以访问
+		obj1.func4();//func4()是缺省方法,同一包中的类可以访问
+		MyClass2 obj2=new MyClass2();
+		obj2.func1();//同一个包中的缺省访问控制类可以进行访问
+	}
+}
+
+----Example 2：不同包之间的非继承访问
+package p2;//不同包间的非继承访问
+import p1.MyClass1;
+//import p1.MyClass2;报错！！！不能导入不同包中的缺省类,缺省类在对应包外不可见
+public class Test {
+	public static void main(String[] args) {
+		MyClass1 obj1=new MyClass1();
+		System.out.println(obj1.a);//a为公共属性,任何地方都可以访问
+		//System.out.println(obj1.b);//报错！！！b为私有属性,类外无法访问
+		//System.out.println(obj1.c);//报错！！！c是受保护属性,不同包中的非子类无法访问
+		//System.out.println(obj1.d);//报错！！！d是缺省属性,不同包中的类不能访问
+		obj1.func1();//func1()是公共方法,任何地方都可以访问
+		//obj1.func2();//报错！！！func2()为私有方法，类外无法访问
+		//obj1.func3();//报错！！！func3()为受保护方法，不同包中的非子类无法访问
+		//obj1.func4();//报错！！！func4()是缺省方法，不同包中的类不能访问
+		//MyClass2 obj2=new MyClass2();//报错！！！不可以访问不同包中的缺省类
+	}
+}
+
+----Example 3：不同包之间的继承访问
+package p3;//不同包间的继承访问
+import p1.MyClass1;
+//import p1.MyClass2;报错！！！不能导入不同包中的缺省类,缺省类在对应包外不可见
+public class Test extends MyClass1 {
+	public static void main(String[] args) {
+		Test obj1=new Test();
+		System.out.println(obj1.a);//a为公共属性，任何地方都可以访问
+		//System.out.println(obj1.b);//报错！！！b为私有属性，类外无法访问
+		System.out.println(obj1.c);//c为受保护属性，不同包中的子类可以访问
+		//System.out.println(obj1.d);//报错！！！d是缺省属性，不同包中的类不能访问
+		obj1.func1();//func1()为公共方法，任何地方都可以访问
+		//obj1.func2();报错！！！func2()是私有方法，类外无法访问
+		obj1.func3();//func3()为受保护方法，不同包中的子类可以访问
+		//obj1.func4();//func4()为缺省方法，不同包中的类无法访问
+	}
+}
+
+##常见的包
+----java.lang:系统常用基础类(String、Object),此包从JDK1.1后自动导入
+----java.lang.reflect:Java反射变成包
+----java.net:进行网络编程开发包
+----java.sql:进行数据库开发的支持包
+----java.util:是Java提供的工具程序包。(集合类等)非常重要
+----java.io:I/O编程开发包

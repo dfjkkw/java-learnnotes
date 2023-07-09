@@ -1,0 +1,49 @@
+**为什么要有this 引用
+
+this:当前对象的引用
+this访问成员变量：this
+this访问成员方法：this
+this访问构造函数：this()
+
+案例：
+public class Main {
+    public int year;
+    public int month;
+    public int day;
+    public void setDate(int y,int m,int d){
+        year=y;
+        month=m;
+        day=d;
+    }
+    public void printDate(){
+        System.out.println(year+"-"+month+"-"+day);
+    }
+    public static void main(String[] args) {
+        Main date1=new Main();
+        Main date2=new Main();
+        Main date3=new Main();
+        date1.setDate(2022,3,8);
+        date2.setDate(2023,3,8);
+        date3.setDate(2024,3,8);
+        date1.printDate();
+        date2.printDate();
+        date3.printDate();
+    }
+}
+
+## 一般地，成员变量和成员方法被视作蓝图或模板以供将来调用，因此定义时不立即具体化，即不在定义时赋值或调用，而是
+等到了其他方法或 main()中，才给予调用或赋值。那么对于将来要调用成员变量和成员方法的对象用什么变量表示呢,Java 给
+起了个名字叫 this。
+
+##this 表示的是当前对象本身，确切地说,this代表了当前对象的一个引用。对象的引用可以理解为对象的另一个名宇，通过引用
+可以顺利地访问对象。在 Java 中，this既可以引用当前对象中的方法，也可以引用当前对象中的成员变量。
+
+##当前对象作为变量指代将来任何将来任何一个代表本类对象使得编程能力大增。这和自然语言中的“这个“那个”具有同样
+的意思，通过指代，使得语言简洁,也具有灵活性。
+
+**this引用的特性
+----1.this的类型：对应类类型引用，即哪个对象调用就是哪个对象的引用类型
+----2.this只能在成员方法中使用
+----3.在成员方法中，this只能引用当前对象，不能再引用其他对象
+----4.this是成员方法第一个隐藏的参数，编译器会自动传递，在成员方法执行时，编译器会负责将调用成员方法对象的引用传递
+给该成员方法，this负责接收

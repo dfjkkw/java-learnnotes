@@ -1,0 +1,94 @@
+**代码块概念及其分类
+
+##代码块:在类中或者方法中,使用{}括起来的一段代码,就称它是代码块。
+
+##分类：
+----普通代码块
+----构造类
+----静态类
+----同步代码块(多线程)
+
+**普通代码块
+
+##普通代码块：定义在方法中的代码块
+
+测试实例：
+public class Main {
+
+    public static void main(String[] args) {
+        {//直接使用{}定义，普通方法块
+            int x=10;
+            System.out.println("x1="+x);//10
+        }
+        int x=100;
+        System.out.println("x2="+x);//100
+    }
+}
+这种方法较少见
+
+**构造代码块
+
+##构造块：定义在类中的代码块(不加修饰符)。也叫实例代码块，构造代码块一般用于初始化实际成员变量
+
+测试实例：
+class Student{
+    private String name;
+    private String gender;
+    private int age;
+    private double score;
+    private static String classroom=" 106java";//静态成员变量-》类变量  访问：类名.属性名
+    //实例代码块
+    {
+        this.name="bit";
+        this.gender="男";
+        this.age=20;
+        System.out.println("I am instance init()");
+    }
+    public Student(){
+        System.out.println("I am Student init()");
+    }
+
+    public void show(){
+        System.out.println("姓名："+name+" 年龄："+age+" 班级："+classroom);
+    }
+
+    public static void main(String[] args) {
+        Student s1=new Student();
+        s1.show();
+    }
+}
+
+
+**静态代码块
+
+##使用static定义的代码块称为静态代码块。一般用于初始化静态成员变量
+
+测试实例：
+class Student{
+    private String name;
+    private String gender;
+    private int age;
+    private double score;
+    private static String classroom=" 106java";//静态成员变量-》类变量  访问：类名.属性名
+    //静态代码块
+    static {
+        //类被加载的时候 就被执行 只会被执行一次
+        System.out.println("这是静态代码块！");
+    }
+    public Student(){
+
+    }
+    public void show(){
+        System.out.println("姓名："+name+" 年龄："+age+" 班级："+classroom);
+    }
+
+    public static void main(String[] args) {
+        Student s1=new Student();
+    }
+}
+
+##注意事项：
+----静态代码块不管生成多少对象，只会执行一次
+----静态成员变量是类的属性，因此是在JVM加载类时开辟空间并初始化的
+----如果一个类中包含多个静态代码块，在编译代码时，编译器会按照定义的先后次序依次执行(合并)
+----实例代码块只有在创建对象时才会执行

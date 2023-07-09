@@ -1,0 +1,133 @@
+**再谈学生类
+使用学生类实例化student1，student2，student3，每个对象都有自己的姓名，性别，年龄，分数等成员信息，这些信息
+就是对不同学生来进行描述的，如下所示：
+class Student{
+    public String name;
+    public String gender;
+    public int age;
+    public double score;
+    public Student(){
+
+    }
+    public Student(String name,String gender,int age,double score){
+        this.name=name;
+        this.gender=gender;
+        this.age=age;
+        this.score=score;
+    }
+    public void show(){
+        System.out.println("姓名："+name+" 年龄："+age);
+    }
+
+    public static void main(String[] args) {
+        Student student1=new Student("张三","女",12,3.2);
+        Student student2=new Student("李四","男",14,4.8);
+        Student student3=new Student("王五","女",13,5.6);
+    }
+}
+
+假设三个同学是同一个班上的，那么他们上课肯定是在同一个教室，那既然在同一个教室，那能否给类中再加上一个
+成员变量，来保存同学上课时的教室呢？答案是不行的。
+
+之前在Student类中定义的成员变量，每个对象中都会包含一份(称之为实例变量)，因为需要使用这些信息来描述具体
+的学生。而现在要表示学生上课的教室，这个教室的属性并不需要每个学生对象中都存储一份，而是所有的学生来共享。
+在Java中，被static修饰的成员，称之为静态成员也可以称为类成员，其不属于某个具体的对象，是所有对象所共享的。
+
+**static修饰成员变量
+
+static修饰的是成员变量，称为静态成员变量，静态成员变量最大的特性：不属于某个具体的对象，是所有对象所共享的。
+
+静态成员特性：
+1.不属于某个具体的对象，是类的属性，所有对象共享的，不储存在某个对象的空间中
+2.既可以通过对象访问，也可以通过类名访问，但一般更推荐使用类名访问
+3.类变量存储在方法区
+4.生命周期伴随类的一生(即：随类的加载而创建，随类的卸载而销毁)
+测试实例：
+class Student{
+    public String name;
+    public String gender;
+    public int age;
+    public double score;
+    public static String classroom=" 106java";//静态成员变量-》类变量  访问：类名.属性名
+    public Student(){
+
+    }
+    public Student(String name,String gender,int age,double score){
+        this.name=name;
+        this.gender=gender;
+        this.age=age;
+        this.score=score;
+    }
+    public void show(){
+        System.out.println("姓名："+name+" 年龄："+age+" 班级："+classroom);
+    }
+
+    public static void func(){
+
+    }
+    public static void main(String[] args) {
+        Student student1=new Student("张三","女",12,3.2);
+        Student student2=new Student("李四","男",14,4.8);
+        Student student3=new Student("王五","女",13,5.6);
+        student1.show();
+        student2.func();
+    }
+}
+调试后在监视窗口中可以看到，静态成员变量并没有存储到某个具体的对象中。
+
+**static修饰成员方法
+一般类中的数据成员都设置为private，而成员方法设置为public，那设置后，Student类中的classroom
+属性如何在类外访问呢？
+测试实例：
+public class Main {
+
+    public static void main(String[] args) {
+        System.out.println(Student.classroom);
+    }
+}
+class Student{
+    private String name;
+    private String gender;
+    private int age;
+    private double score;
+    private static String classroom=" 106java";//静态成员变量-》类变量  访问：类名.属性名
+    //······
+}
+编译失败：
+Erro:(10, 35)  java: classroom 在 Test.Student 中是 private 访问控制
+
+那static属性应该如何访问呢？
+Java中，被static修饰的成员方法称为静态成员方法，是类的方法，不是某个对象所特有的。静态成员一般是通过
+静态方法来访问的
+
+静态方法特性：
+1.不属于某个具体的对象，是类方法
+2.可以通过对象调用，也可以通过类名.静态方法名(···)方法调用，更推荐使用后者
+3.不能在静态方法中访问任何非静态成员变量
+
+测试实例：
+public static String getClassroom(){
+        System.out.println(this);
+        return classroom;
+    }
+编译错误：
+java: 无法从静态上下文中引用非静态 变量 this
+public static String getClassroom(){
+        age+=1;
+        return classroom;
+    }
+编译错误：
+java: 无法从静态上下文中引用非静态 变量 age
+
+4.静态方法中不能调用任何非静态方法，因为非静态方法有this参数，在静态方法中调用的时候无法传递this引用
+5.静态方法无法重写，不能来实现多态
+
+**static成员变量初始化
+
+注意：静态成员变量一般不会放在构造方法中来初始化，构造方法中初始化的是与对象相关的实例属性
+
+静态成员变量的初始化分为两种：就地初始化和静态代码块初始化。
+
+1.就地初始化
+就地初始化指的是：在定义时直接给出初始值
+2.静态代码块初始化

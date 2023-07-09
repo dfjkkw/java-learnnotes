@@ -1,0 +1,156 @@
+**如何初始化对象
+
+Student student = new Student();
+实例化对象-》一定会调用后构造方法
+当我们没有提供任何构造方法的时候，编译器会帮我们提供一个不带参数的构造方法
+
+**构造方法
+概念：构造方法（也称为构造器）是一个特殊的成员方法，名字必须与类名相同，在创建对象时，由编译器自动调用，
+并且在整个对象的生命周期内只调用一次。
+
+测试实例：
+class Student{
+    public String name;
+    public int age;
+    public Student(){
+        System.out.println("这是一个无参构造函数");
+    }
+    public Student(String name,int age){
+        System.out.println("这是一个有参构造函数");
+        this.name=name;
+        this.age=age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void print(){
+        System.out.println(this.name+"=>"+this.age);
+    }
+
+    public static void main(String[] args) {
+        Student student1 = new Student();
+        Student student2=new Student("张三",23);
+        student2.print();
+    }
+}
+
+注意：构造方法的作用就是对对象中的成员进行初始化，并不负责给对象开辟空间。
+
+##特性
+----1.名字与类名相同。
+
+----2.没有返回值，但不能用 void 声明构造函数。
+
+----3.生成类的对象时自动执行，无需调用。
+
+----4.构造方法主要作用是完成对类对象的初始化工作。可以执行。因为一个类即使没有
+声明构造方法也会有默认的无参构造方法。
+
+----5.构造方法可以重载
+
+----6.创建对象由编译器自动调用，并且在对象的生命周期内只调用一次
+
+----7.绝大多数情况下使用public来修饰，特殊情境下会被private修饰(后序讲单例模式时遇到)
+
+----8.构造方法中，可以通过this调用其他构造方法来简化代码
+
+测试实例：
+class Student{
+    public String name;
+    public int age;
+    public Student(){
+        //调用本类中其他的构造方法
+        this("李四",13);//必须放在构造方法里面，并且必须是第一行
+        System.out.println("这是一个无参构造函数");
+    }
+    public Student(String name,int age){
+        System.out.println("这是一个有参构造函数");
+        this.name=name;
+        this.age=age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void print(){
+        System.out.println(this.name+"=>"+this.age);
+    }
+
+    public static void main(String[] args) {
+        Student student1 = new Student();
+        Student student2=new Student("张三",23);
+        student1.print();
+        student2.print();
+    }
+}
+
+**默认初始化
+
+##在缺省的情况下，编译器提供缺省的构造方法，也称为默认的构造方法，该构造方法是
+无参构造方法，并不需要在类中显式定义，将实例变量初始化为其缺省值。
+
+##缺省值设置
+
+ ----类的默认构造方法将对象的属性初始化为缺省值，成员变量如果是基本数据类型，其初始化
+是缺省的——byte, char, short, int, long, float 和double 变量其缺省的初始值是0, boolean 变
+量缺省初始值是false。成员变量如果是引用类型，其缺省的初始值是null。
+
+
+ ##注意
+
+----值得注意的是，在一个类中，如果我们已经显示地声明了一个构造方法，那么程序编译时就不会再生成默认的构造方法了。
+
+----所以在定义类时，若要显示地写出有参数的构造方法，最好写上无参数的构造方法。
+
+
+**就地初始化
+
+##在声明成员变量时，就直接给出了初始值
+测试实例：
+class Student{
+    public String name="张三";
+    public int age=23;
+    public Student(){
+
+    }
+    public Student(String name,int age){
+        this.name=name;
+        this.age=age;
+    }
+
+
+    public static void main(String[] args) {
+        Student student1 = new Student();
+
+    }
+}
+
+##注意：代码编译完成后，编译器会将所有给成员初始化的这些语句添加到各个构造函数中。
+

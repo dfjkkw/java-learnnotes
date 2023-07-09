@@ -1,0 +1,251 @@
+当一个事物的内部，还有一个部分需要一个完整的结构进行描述，而这个内部的完整的结构又只为外部事物提供服务，那么
+这个内部的完整结构最好使用内部类。在Java中，可以将一个类定义在另一个类或者一个方法的内部，前者称为内部类，后者
+称为外部类。内部类也是封装的一种体现。
+public class OutClass{
+    class InnerClass{
+
+    }
+}
+//OutClass是外部类
+//InnerClass是内部类
+
+注意事项：
+1.定义在class类名{}花括号外部的，即使是在一个文件里，都不能称为内部类。
+测试实例：
+public class A{
+}
+class  B{
+
+}
+//A和B是两个独立的类，彼此之间没有关系
+2.内部类和外部类共同使用一个java源文件，但是经过编译之后，内部类会形成单独的字节码文件。
+**内部类的分类
+
+----实例内部类/非静态内部类(未被static修饰)
+----静态内部类(被static修饰)
+----局部内部类(几乎不用)
+测试实例：
+public class OutClass{
+   //成员位置定义：未被static修饰--->实例内部类
+    public class InnerClass1{
+    }
+    //成员位置定义：被static修饰--->静态内部类
+    static class InnerClass2{
+    }
+    public void method(){
+        //方法中也可以定义内部类--->局部内部类：几乎不用
+        public class InnerClass3{
+        }
+    }
+}
+
+根据内部类定义的位置不同，一般可以分为以下几种形式：
+1.成员内部类(普通内部类：未被static修饰的成员内部类和静态内部类：被static修饰的成员内部类)
+2.局部内部类(不谈修饰符)、匿名内部类
+
+注意：内部类其实日常开发使用并不是很多，大家在看一些库中的代码时候可能会遇到比较多，日常开始中
+使用最多的是匿名内部类
+
+**内部类
+
+在外部类中，内部类定义位置与外部类成员所处的位置相同，因此称为成员内部类
+
+##实例内部类
+即未被static修饰的成员内部类
+测试实例：
+public class Main {
+
+    public static void main(String[] args) {
+        OuterClass outerClass=new OuterClass();
+        OuterClass.InnerClass innerClass=outerClass.new InnerClass();
+        OuterClass.InnerClass innerClass2=new OuterClass().new InnerClass();
+        innerClass.func();
+    }
+}
+class OuterClass{
+    public int data1=1;
+    int data2=2;
+    public static int data3=3;
+    //实例内部类
+    /*
+    * 1.如何获取 实现内部类的对象
+    *      OuterClass.InnerClass innerClass=outerClass.new InnerClass();
+    * 2.实例内部类中 不能有静态的成员变量 非要定义，就要用static final修饰
+    *3.在实例内部类当中，如何访问外部类当中相同的成员变量？
+    *      OuterClass.this.data1
+    * */
+    class InnerClass{
+        public int data1=111;
+        int data4=5;
+        public static final int data5=6;
+        public void func(){
+            System.out.println("InnerClass::func()");
+            System.out.println(OuterClass.this.data1);
+            System.out.println(data1);
+            System.out.println(data2);
+            System.out.println(data3);
+            System.out.println(data4);
+            System.out.println(data5);
+        }
+    }
+    public void test(){
+        System.out.println("OuterClass::test()");
+        final int SIZE=10;//定义常量，常量是在程序编译的时候 确定的 一旦初始化，就不能进行修改
+    }
+}
+
+##注意事项：
+----1.外部类中的任何成员都可以在内部类方法中直接访问
+----2.实例内部类所处的位置与外部类成员位置相同，因此也受public、private等访问限定符的约束
+----3.在实例内部类方法中访问同名的成员时，优先访问自己的，如果要访问外部类同名的成员，必须：
+外部类名称.this.同名成员 来访问
+----4.实例内部类对象必须在先有外部类对象前提下才能创建
+----5.实例内部类的非静态方法中包含了一个指向外部类对象的引用
+----6.外部类中，不能直接访问实例内部类中的成员，如果要访问必须先要创建内部类的对象
+
+##静态内部类
+即被static修饰的成员内部类
+测试实例：
+public class Main {
+
+    public static void main(String[] args) {
+        OuterClass outerClass=new OuterClass();
+        OuterClass.InnerClass innerClass=new OuterClass.InnerClass();
+    }
+}
+class OuterClass{
+    public int data1=1;
+    int data2=2;
+    public static int data3=3;
+    //实例内部类
+    /*
+    * 1.如何获取 静态内部类的对象
+    *      OuterClass.InnerClass innerClass=outerClass.new InnerClass();
+    * 2.静态内部类中，不能访问外部类中的非静态成员。外部类中的非静态成员需要通过外部类的对象的引用才能访问。
+    *       OuterClass outerClass=new OuterClass();
+            System.out.println(outerClass.data1);
+    * */
+    static class InnerClass{
+        public int data1=111;
+        int data4=5;
+        public static final int data5=6;
+        public void func(){
+            System.out.println("InnerClass::func()");
+            OuterClass outerClass=new OuterClass();
+            System.out.println(outerClass.data1);
+            System.out.println(data1);
+            System.out.println(outerClass.data2);
+            System.out.println(data3);
+            System.out.println(data4);
+            System.out.println(data5);
+        }
+    }
+    public void test(){
+        System.out.println("OuterClass::test()");
+        final int SIZE=10;//定义常量，常量是在程序编译的时候 确定的 一旦初始化，就不能进行修改
+    }
+}
+##注意事项：
+----1.在静态内部类中只能访问外部类中的静态成员
+      如果确实想访问，我们该如何做？
+----2.创建静态内部类对象时，不需要先创建外部类对象
+
+**局部内部类
+
+测试实例：
+public class Main {
+    public void func(){
+        //局部内部类
+        class Inner{
+            public void test(){
+                System.out.println("adfgagh");
+            }
+        }
+    }
+    public static void main(String[] args) {
+        OuterClass outerClass=new OuterClass();
+        OuterClass.InnerClass innerClass=new OuterClass.InnerClass();
+    }
+}
+
+##注意事项：
+----1.局部内部类只能在所定义的方法体内部使用
+----2.不能被public、static等修饰符修饰
+----3.编译器也有自己独立的字节码文件，命名格式：外部类名字$内部类名字.class
+----4.几乎不会使用
+
+**匿名内部类
+
+##1. 定义
+----匿名内部类是一个用法较为简单的类，写法示例如下：
+class OuterClass{
+    public void func(){
+        System.out.println("匿名内部类");
+    }
+}
+public class TestDemo{
+    public static void main(String[] args) {
+        new OuterClass(){
+//此处为匿名内部类
+        };
+    }
+}
+
+----当然，在匿名内部类中也可以重写外部类中的方法：
+lass OuterClass{
+    public void func(){
+        System.out.println("匿名内部类");
+    }
+}
+public class TestDemo{
+    public static void main(String[] args) {
+        new OuterClass(){
+            @Override
+            public void func() {
+                System.out.println("此处为重写后的func方法");
+            }
+        };
+    }
+}
+
+----调用重写后的方法步骤如下：
+public static void main(String[] args) {
+        new OuterClass(){
+            @Override
+            public void func() {
+                System.out.println("此处为重写后的func方法");
+            }
+        }.func();
+    }
+
+----注意，匿名内部类只定义一次且没有名字
+
+##2. 常见用法
+ interface A {
+        public void func();
+    }
+
+    A a = new A(){
+        @Override
+        public void func() {
+            System.out.println("当前是个匿名内部类，实现了A接口，重写了接口的方法");
+        }
+    };
+
+----上面部分的代码为匿名内部类，这个内部类实现了A接口并且重写了A接口中的方法
+
+##3. 注意事项
+----匿名内部类中有一个变量捕获机制，即匿名内部类中变量的值是无法修改的
+public static void main(String[] args) {
+        int flag=1;
+        new OuterClass(){
+            @Override
+            public void func() {
+                System.out.println("此处为重写后的func方法");
+                System.out.println(flag);
+            }
+        }.func();
+    }
+----此时我们的程序可以正常运行，打印的结果为1
+----然而，当我们修改flag的值后，程序会报错
+----因此，需要牢记匿名内部类中的变量捕获机制，即无法二次修改变量的值！！！

@@ -1,0 +1,53 @@
+**什么是类
+概念：类就是某些具备某些共同特征的实体的集合,它是一种抽象的数据类型，它是对所具有相同特征实体的抽象，在面向
+对象的程序设计语言中，类是对一类“事物”的属性与行为的抽象。
+
+类可以理解为一个模板，它描述一类对象的行为和状态。
+
+举个例子：例如一本书就可以看成一个类，那么书这个类包含了标题、标价、作者等这些属性
+
+类的三大部件：构造器、成员变量、方法
+
+**语法格式：
+class 类名{
+    public 属性  属性名;
+    ```
+   // 构造方法
+    //无参
+    public 类名(){
+   }
+   //有参
+    public 类名(属性  属性名){
+   }
+   行为【方法】-》成员方法
+}
+
+测试实例：
+//class 类名-》大驼峰
+class WashMachine{
+    //属性【字段】-》成员属性
+    public String brand;//品牌
+    public String type;//型号
+    public double weight;//重量
+    public double length;//长
+    public double height;//高
+    public String color;//颜色
+    //行为【方法】-》成员方法
+    public void dryClothes(){
+        System.out.println("脱水功能");
+    }
+    public void setTime(){
+        System.out.println("定时功能");
+    }
+}
+
+采用Java语言将洗衣机类在计算机中定义完成，经过javac编译之后形成class文件，在JVM的基础上计算机就可以识别了。
+
+注意实项：
+1.类名注意采用大驼峰定义
+2.成员前写法统一为public，后面会详细解释
+3.此处写的方法不带static关键字，后面会详细解释
+4.一般一个文件当中只定义一个类
+5.main方法所在的类一般要使用public修饰(注意：Eclipse默认会在public修饰的类中找main方法)
+6.public修饰的类必须要和文件名相同
+7.不能轻易去修改public修饰的类的名称，如果要修改，通过开发工具修改

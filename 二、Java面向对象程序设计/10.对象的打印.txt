@@ -1,0 +1,51 @@
+**先导
+
+## 我们该怎么打印对象？为什么有些人能打印出对象的内部信息，而我们只能打印出一堆地址？
+
+我们先创建一个类，并在类中定义一些成员变量和构造方法
+class Person{
+    String name; //名字
+    int age;     //年龄
+    String sex;  //性别
+    int id;      //身份id
+ 
+    public Person(String name, int age, String sex, int id) {
+        this.name = name;
+        this.age = age;
+        this.sex = sex;
+        this.id = id;
+    }
+}
+
+然后我们实例化该 Person 对象，并打印它:
+    public static void main(String[] args) {
+        Person person = new Person("威威",20,"男",123456);
+        System.out.println(person);
+    }
+
+运行之后结果如下:
+Person@14ae5a5
+
+##为什么会打印一堆字母和数字，而不是打印person对象内部的信息呢？
+
+----这是因为在 JVM 中，我们的对象是存储在虚拟栈中的，而对象的引用的内容是存储在堆当中，也就是是对象中实际上存储的是其引用内容的地址。
+----所以我们直接打印 对象的话，就会出现一堆数字。
+----如果想打印对象内部信息的话，我们就要在类内部定义 toString() 方法 
+
+**定义 toString() 方法
+
+##我们直接在该 Person 类当中定义一个 toString() 方法
+
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", sex='" + sex + '\'' +
+                ", id=" + id +
+                '}';
+    }
+
+这个 toString() 方法也可以通过快捷键生成，在Idea中，右键点击 Generate，然后选择 toString() 方法，接着按着 'Ctrl' 键选中该成员变量，
+点击 OK就可以了
+
+这时我们再打印 Person 对象，该对象就会自动调用 toString() 方法，打印出来的信息就是我们自定义的信息啦
