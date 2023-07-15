@@ -1,0 +1,610 @@
+**为什么需要继承
+
+----使用继承可以有效实现代码的复用，避免重复代码的出现
+----当两个类具有相同的特征（属性）和行为（方法）时，可以相同的部分抽取出来放到一个类中作为父类，其他两个类继承这个父类。
+----继承实现了面向对象的原则：write once，only once（编写一次，且编写一次）
+
+**继承概念
+
+继承(inheritance)机制，是面向对象程序设计代码复用的最重要的手段，它允许程序员在保持原有类特性的基础上进行扩展，增加新功能，
+这样产生新的类，称为派生类。继承呈现了面向对象程序设计的层次结构，体现了由简单到复杂的认知过程，继承主要解决的问题是：
+共性的抽取，实现代码复用。
+
+从继承概念上可以看出继承最大的作用是：实现代码复用，还有就是来实现多态
+
+**继承的语法
+
+在Java中如果要表示类之间的继承关系，需要借助extends关键字，具体如下：
+修饰符 class 子类 extends 父类{
+        //······
+}
+
+测试用例：
+public class Main {
+    public static void main(String[] args) {
+        Dog dog=new Dog();
+        dog.name="旺财";
+        dog.age=10;
+        dog.barks();
+        dog.eat();
+    }
+}
+class Animals{
+    public String name;
+    public int age;
+    public void eat(){
+        System.out.println(name+"正在吃饭！");
+    }
+}
+
+class Dog extends Animals{
+    public void barks(){
+        System.out.println(name+"汪汪叫！");
+    }
+}
+
+class Cat extends Animals{
+    public void catchMouse(){
+        System.out.println(name+"正在抓老鼠！");
+    }
+}
+
+注意事项：
+----1.子类会将父类中的成员变量或者成员方法继承到子类中了
+----2.子类继承父类之后，必须要新添加自己特有的成员，体现出与基类的不同，否则就没有必要继承了
+
+**父类的成员访问
+
+在继承体系中，子类将父类中的方法和字段继承下来了，那在子类中能否直接访问父类中继承下来的成员呢?
+
+##子类中访问父类的成员变量
+----1.子类和父类不存在同名成员变量
+----2.私有成员可以被继承但是不能被访问
+
+测试实例：
+//父类
+public class Fu {
+    int num=20;//父类中的num
+}
+
+
+//子类
+public class Zi extends Fu {
+    int num=10;//子类中的num
+    public void method(){
+        int num=30;//局部变量num
+        System.out.println(num);//局部30
+        System.out.println(this.num);//子类10
+        System.out.println(super.num);//父类20
+    }
+}
+
+在子类方法中或者通过子类对象访问成员时
+----如果访问的成员变量子类中有，优先访问自己的成员变量
+----如果访问的成员变量子类中无，则访问父类继承下来的，如果父类也没有定义，则编译报错
+----如果访问的成员变量与父类成员变量同名，则优先访问自己的
+成员变量访问遵循就近原则，自己有优先自己的，如果没有则向父类中找
+
+##子类中访问父类的成员方法
+----成员方法名字不同
+测试实例：
+class Base{
+    int a;
+    int b;
+    public void methodA(){
+        System.out.println("Base中的methodA方法");
+    }
+
+}
+class Derived extends  Base{
+    int a;
+    int c;
+    public  void methodB(){
+        System.out.println("Derived中的methodB方法");
+    }
+
+    public void methodC() {
+        methodB();
+        methodA();
+        //methodD();//编译错误，未找到methodD()
+    }
+}
+
+总结：成员方法没有同名时，在子类方法中或通过子类对象访问方法时，则优先访问自己的，自己
+没有时再到父类中找，如果父类中也没有就报错。
+
+----成员方法名字相同
+
+测试实例：
+public class Fu {
+    public void methodFu(){
+        System.out.println("父类方法执行");
+    }
+    public void method(){
+        System.out.println("父类重名方法执行");
+    }
+}
+
+public class Zi extends Fu{
+    public void methodZi(){
+        System.out.println("子类方法执行");
+    }
+    public void method(){
+        System.out.println("子类重名方法执行");
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        Zi zi = new Zi();
+
+        zi.methodZi();//
+        zi.methodFu();//子类中没有就上父类中找
+        zi.method();//子类重名方法执行,创建的是子对象，所以优先用子对象中的method（）
+    }
+}
+
+说明：
+--通过子类对象访问父类与子类中不同名方法时，优先访问自己的，自己没有时再到父类中找，如果
+父类中也没有就报错。
+--通过派生类对象访问父类与子类同名方法时，如果父类和子类同名方法的参数列表不同(重载)，根据
+方法适传递的参数选则合适的方法访问秒如果没有则报错。
+
+**super关键字
+由于设计不好，或者因场景需要，子类和父类中可能中可能会存在相同名称的成员，如果在子类方法中访问父类同名成员时，该如何操作？
+直接访问是无法做到的，Java提供了super关键字，该关键字主要作用：在子类方法中访问父类的成员。
+
+测试实例：
+class Animal {
+    void eat() {
+        System.out.println("Animal eat something");
+    }
+}
+class Dog extends Animal {
+    @Override
+    void eat() {
+        System.out.println("Dog eat something");
+    }
+
+    void bark() {
+        System.out.println("bark");
+    }
+
+    void work() {
+        super.eat();
+        eat();
+    }
+}
+
+public class TestSuper2 {
+
+    public static void main(String[] args) {
+        Dog d = new Dog();
+        d.work();
+    }
+
+}
+
+##在子类方法中，如果想要明确访问父类中成员时，借助super关键字即可
+
+##注意事项：
+----1.只能在非静态方法中使用
+----2.在子类方法中，访问父类的成员变量和方法。
+----super.data;//
+----super.func();//调用父类的普通成员方法
+----super();//调用父类的构造方法
+**子类构造方法
+
+##父子父子，先有父再有子，即：子类对象构造时，需要先调用基类构造方法，然后执行子类的构造方法。
+
+测试实例：
+class Base{
+    public Base(){
+        System.out.println("Base()");
+    }
+}
+class Derived extends Base{
+    public Derived(){
+        //super();//注意子类构造方法中默认会调用基类的无参构造方法:super()
+        //用户没有写时，编译器会自动添加，而且super()必须是子类子类构造方法中第一条语句
+        //并且只能出现一次
+        System.out.println("Derived()");
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        Derived derived=new Derived();
+    }
+}
+//测试结果：
+//Base()
+//Derived()
+
+在子类构造方法中，并没有写任何关于基类构造的代码，但是在构造子类对象时，先执行基类的构造方法，然后执行子类的构造方法。
+因为：子类对象中成员是由两部分组成的，基类继承下来的以及子类新增加的部分。父子父子肯定是先有父再有子，所以在构造子类
+对象 的时候，先要调用基类的构造方法，将从基类继承下来的成员构造完整，然后再调用子类的构造方法，将子类自己新增加的成员
+初始化完整。
+
+##注意：
+----1.若父类显式定义无参或者默认的构造方法，在子类构造方法第一行默认有隐含的super()调用，即调用基类构造方法。
+----2.如果父类构造方法是带有参数的，此时需要用户为子类显示定义构造方法，并在子类构造方法中选中合适的父类构造方法调用，
+否则编译失败。
+----3.在子类构造方法中，super(···)调用父类构造时，必须是子类构造函数中第一条语句。
+----4.super(···)只能在子类构造方法中出现一次，并且不能和this同时出现。
+
+**super和this
+
+##this与super的区别
+区别点     	          this  	                                             super
+属性         访问本类中的属性,若本类中没有此属性,则从父类中继续查找	       访问父类中的属性
+方法         访问本类中的方法,若本类中没有此方法,  则从父类中继续查找	       直接访问父类中的方法
+构造方法	  调用本类的构造方法，必须放在子类构造方法的首行                   调用父类构造, 必须放在构造方法的首行
+特殊 	    表示当前对象  	                                            无此概念
+
+##super使用的注意事项
+----1.this与super都可以调用构造方法,而且都是放在构造方法的首行,因此这两个关键字肯定不能同时出现；
+----2.如果子类中所有的构造方法都使用this()的调用形式,那么子类的构造方法就没有this的出口, 则会出现构造方法循环调用的问题,
+解决此问题就是使用super调用父类的无参构造方法作为函数的出口；
+----3.super不一定非要在方法覆写之后使用,也可以明确的表示某个方法是从父类中继承而来的；
+----4.不管任何时候,子类实例化都最先调用父类的构造方法,默认调用的是无参构造方法；
+----5.super的主要两种用途,都和父类有关。
+
+**再谈初始化
+
+测试实例：
+class Animal{
+    protected String name;
+    private int age;
+    static {
+        System.out.println("Animal::static");
+    }
+    public Animal(String name,int age){
+        this.name=name;
+        this.age=age;
+        System.out.println("Animal(String,int)");
+    }
+    public void eat(){
+        System.out.println(name+"吃饭！");
+    }
+}
+class Dog extends Animal{
+    public Boolean silly;
+    static {
+        System.out.println("Dog::static");
+    }
+    public Dog(String name,int age,Boolean silly){
+        super(name,age);
+        this.silly=silly;
+        System.out.println("Dog(String,int,Boolean)");
+    }
+    public void houseGuard(){
+        System.out.println(name+"正在看家护院！");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog dog=new Dog("旺财",12,false);
+    }
+}
+//测试结果：
+//Animal::static
+//Dog::static
+//Animal(String,int)
+//Dog(String,int,Boolean)
+
+##通过分析执行结构，得出以下结论：
+----1.父类的静态代码块优先于子类静态代码块执行，而且最早执行
+----2.父类实例代码块和父类构造方法紧接着执行
+----3.子类的实例代码块和子类构造方法紧接着执行
+----4.第二次实例化子类对象时，父类和子类的静态代码块都将不会再执行
+
+**protected关键字
+
+##访问控制修饰符
+Java中，可以使用访问控制符来保护对类、变量、方法和构造方法的访问。
+
+----Java 支持 4 种不同的访问权限。
+---default (即默认，什么也不写）: 在同一包内可见，不使用任何修饰符。使用对象：类、接口、变量、方法。
+---private : 在同一类内可见。使用对象：变量、方法。 注意：不能修饰类（外部类）
+---public : 对所有类可见。使用对象：类、接口、变量、方法
+---protected : 对同一包内的类和所有子类可见。使用对象：变量、方法。 注意：不能修饰类（外部类）。
+
+我们可以通过以下表来说明访问权限：
+
+                                访问控制
+修饰符	当前类	 同一包内	子孙类(同一包)	子孙类(不同包)	其他包
+public	     Y	     Y	          Y	              Y	             Y
+protected	 Y	     Y	          Y	             Y/N	         N
+default	 Y	     Y	          Y	              N	             N
+private	 Y	     N	          N	              N	             N
+
+**继承方式
+
+##Java支持以下五种类型的继承:
+----单一继承：一个类只能直接继承一个超类。这是Java所遵循的继承方式。
+----多重继承：一个类可以同时从多个超类中继承属性和方法。Java不支持多重继承。
+----多层继承：一个类可以继承一个超类，而这个超类本身也继承了另外一个超类。这就是多层继承。
+----接口继承：一个类可以通过实现一个或多个接口来继承其他属性和方法。这种方式称为接口继承。
+----实现继承：这是指子类继承父类的属性和方法。实现继承又分为默认继承和覆盖继承。
+
+测试实例：
+示例代码
+以下是一个示例程序，它演示了继承的用法。它包括一个超类（Vehicle）和两个子类（Car和Bike），其中Car类和Bike类都继承了Vehicle类的属性和方法：
+
+```
+class Vehicle {
+  protected String brand = "Brand Name";
+  public void honk() {
+    System.out.println("Tuut, tuut!");
+  }
+}
+
+class Car extends Vehicle {
+  private String modelName = "Model Name";
+  public static void main(String[] args) {
+    Car myCar = new Car();
+    myCar.honk();
+    System.out.println(myCar.brand + " " + myCar.modelName);
+  }
+}
+
+class Bike extends Vehicle {
+  private String modelName = "Model Name";
+  public static void main(String[] args) {
+    Bike myBike = new Bike();
+    myBike.honk();
+    System.out.println(myBike.brand + " " + myBike.modelName);
+  }
+}
+
+注意：Java中不支持多继承
+----时刻牢记，我们写的类是现实事物的抽象。而我们真正公司中所遇到的项目往往业务比较复杂，可能会涉及到一系列复杂的概念，都需要我们
+使用代码来表示，所以我们真实项目中所有的类也会有很多。类之间的关系也会更加复杂。
+----但是即便如此
+
+**final关键字
+
+##1.修饰变量或字段，表示常量(即不能修改)
+测试用例：
+final int a=10;
+a=20;//编译出错
+
+##2.修改类：表示此类不能被继承
+测试用例：
+final public class Animal{
+···
+}
+public class Bird extends Animal{
+···
+}
+//编译出错：
+无法从最终com.bit.Animal进行继承
+
+我们平时是用的String字符串类，就是用final修饰的，不能被继承
+##修饰方法：表示该方法不能被重新
+
+**继承与组合
+
+##什么是组合
+继承：
+测试实例：
+/**
+ * 动物
+ */
+public class Animal {
+    public void breathing() {
+        System.out.println("呼气...吸气...");
+    }
+}
+
+/**
+ * 飞行动物
+ * 继承，可以获得父类属性和方法
+ */
+public class FlyingAnimals extends Animal{
+    public void filying() {
+        System.out.println("飞行...");
+    }
+
+    public static void main(String[] args) {
+        FlyingAnimals flyingAnimals = new FlyingAnimals();
+        flyingAnimals.breathing();
+        flyingAnimals.filying();
+    }
+}
+
+组合是通过对现有对象进行拼装即组合产生新的具有更复杂的功能。
+测试实例：
+/**
+ * 动物
+ */
+public class Animal {
+    public void breathing() {
+        System.out.println("呼气...吸气...");
+    }
+}
+
+/**
+ * 爬行动物
+ * 组合，可以获取组合对象的属性和方法
+ */
+public class Reptilia {
+
+    private Animal animal;
+
+    public Reptilia(Animal animal) {
+        this.animal = animal;
+    }
+
+    public void crawling() {
+        System.out.println("爬行...");
+    }
+    public void breathing() {
+        animal.breathing();
+    }
+
+
+    public static void main(String[] args) {
+        Animal animal = new Animal();
+        Reptilia reptilia = new Reptilia(animal);
+        reptilia.breathing();;
+        reptilia.crawling();
+    }
+}
+
+##继承和组合有什么区别和联系
+----继承最大的一个好处就是代码复用。假如两个类有一些相同的属性和方法，我们就可以将这些相同的部分，抽取到父类中，让两个子类继承父类。
+这样，两个子类就可以重用父类中的代码，避免代码重复写多遍。不过，这一点也并不是继承所独有的，我们也可以通过其他方式来解决这个代码复用
+的问题，比如利用组合关系而不是继承关系。
+----继承是面向对象的四大特性之一，用来表示类之间的 is-a 关系，可以解决代码复用的问题。虽然继承有诸多作用，但继承层次过深、过复杂，也会影响
+到代码的可维护性。在这种情况下，我们应该尽量少用，甚至不用继承。
+----继承主要有三个作用：表示 is-a 关系，支持多态特性，代码复用。而这三个作用都可以通过组合、接口、委托三个技术手段来达成。除此之外，利用组合
+还能解决层次过深、过复杂的继承关系影响代码可维护性的问题。
+----尽管我们鼓励多用组合少用继承，但组合也并不是完美的，继承也并非一无是处。在实际的项目开发中，我们还是要根据具体的情况，来选择该用继承还是
+组合。如果类之间的继承结构稳定，层次比较浅，关系不复杂，我们就可以大胆地使用继承。反之，我们就尽量使用组合来替代继承。除此之外，还有一些
+设计模式、特殊的应用场景，会固定使用继承或者组合。
+
+##为什么不推荐使用继承
+我们定义一个抽象的“鸟”的类，所有鸟都继承这个类。
+
+AbstractBird 中定义的fly方法并不完全都适用于所有的鸟，比如鸵鸟不会飞，继承父类之后只能重写fly方法，抛出一个异常表示不会飞。
+
+但是这显然违背了里氏替换原则，也违背了我们之后要讲的最小知识原则（Least Knowledge Principle，也叫最少知识原则或者迪米特法则），暴露不该暴露的
+接口给外部，增加了类使用过程中被误用的概率，也徒增了代码量。
+
+测试实例：
+public class AbstractBird {
+  //...省略其他属性和方法...
+  public void fly() { //... }
+}
+
+public class Ostrich extends AbstractBird { //鸵鸟
+  //...省略其他属性和方法...
+  public void fly() {
+    throw new UnSupportedMethodException("I can't fly.'");
+  }
+}
+
+但是，鸟会不会飞只是其中一个行为，会不会叫、会不会下蛋……如果每一种行为都定义一个抽象类，那继承关系会越来越复杂，而且都是强耦合性。
+
+所以，继承最大的问题就在于：继承层次过深、继承关系过于复杂会影响到代码的可读性和可维护性。这也是为什么我们不推荐使用继承。
+
+##组合的好处
+上面关于继承的问题，针对“会飞”这样一个行为特性，我们可以定义一个 Flyable 接口，只让会飞的鸟去实现这个接口。对于会叫、会下蛋这些行为特性，
+我们可以类似地定义 Tweetable 接口、EggLayable 接口。我们将这个设计思路翻译成 Java 代码的话，就是下面这个样子：
+
+public interface Flyable {
+  void fly();
+}
+public interface Tweetable {
+  void tweet();
+}
+public interface EggLayable {
+  void layEgg();
+}
+public class Ostrich implements Tweetable, EggLayable {//鸵鸟
+  //... 省略其他属性和方法...
+  @Override
+  public void tweet() { //... }
+  @Override
+  public void layEgg() { //... }
+}
+public class Sparrow impelents Flyable, Tweetable, EggLayable {//麻雀
+  //... 省略其他属性和方法...
+  @Override
+  public void fly() { //... }
+  @Override
+  public void tweet() { //... }
+  @Override
+  public void layEgg() { //... }
+}
+
+不过，我们知道，接口只声明方法，不定义实现。也就是说，每个会下蛋的鸟都要实现一遍 layEgg() 方法，并且实现逻辑是一样的，这就会导致代码重复的
+问题。那这个问题又该如何解决呢？
+
+我们可以针对三个接口再定义三个实现类，它们分别是：实现了 fly() 方法的 FlyAbility 类、实现了 tweet() 方法的 TweetAbility 类、实现了 layEgg() 方法的
+ EggLayAbility 类。然后，通过组合和委托技术来消除代码重复。具体的代码实现如下所示：
+
+
+public interface Flyable {
+  void fly()；
+}
+public class FlyAbility implements Flyable {
+  @Override
+  public void fly() { //... }
+}
+//省略Tweetable/TweetAbility/EggLayable/EggLayAbility
+
+public class Ostrich implements Tweetable, EggLayable {//鸵鸟
+  private TweetAbility tweetAbility = new TweetAbility(); //组合
+  private EggLayAbility eggLayAbility = new EggLayAbility(); //组合
+  //... 省略其他属性和方法...
+  @Override
+  public void tweet() {
+    tweetAbility.tweet(); // 委托
+  }
+  @Override
+  public void layEgg() {
+    eggLayAbility.layEgg(); // 委托
+  }
+}
+
+我们知道继承主要有三个作用：表示 is-a 关系，支持多态特性，代码复用。而这三个作用都可以通过其他技术手段来达成。比如 is-a 关系，我们可以通过组合
+和接口的 has-a 关系来替代；多态特性我们可以利用接口来实现；代码复用我们可以通过组合和委托来实现。所以，从理论上讲，通过组合、接口、委托三个
+技术手段，我们完全可以替换掉继承，在项目中不用或者少用继承关系，特别是一些复杂的继承关系。
+
+不过，之所以“多用组合少用继承”这个口号喊得这么响，只是因为，长期以来，我们过度使用继承。其实，组合并不完美，继承也不是一无是处。只要我们
+控制好它们的副作用、发挥它们各自的优势，在不同的场合下，恰当地选择使用继承还是组合，这才是我们所追求的境界。
+
+##必须使用继承
+一些特殊的场景要求我们必须使用继承。如果你不能改变一个函数的入参类型，而入参又非接口，为了支持多态，只能采用继承来实现。比如下面这样一段代码，
+其中 FeignClient 是一个外部类，我们没有权限去修改这部分代码，但是我们希望能重写这个类在运行时执行的 encode() 函数。这个时候，我们只能采用继承来实现了。
+
+测试实例：
+
+public class FeignClient { // Feign Client框架代码
+  //...省略其他代码...
+  public void encode(String url) { //... }
+}
+
+public void demofunction(FeignClient feignClient) {
+  //...
+  feignClient.encode(url);
+  //...
+}
+
+public class CustomizedFeignClient extends FeignClient {
+  @Override
+  public void encode(String url) { //...重写encode的实现...}
+}
+
+// 调用
+FeignClient client = new CustomizedFeignClient();
+demofunction(client);
+
+##必须使用组合
+比如，Crawler 类和 PageAnalyzer 类，它们都用到了 URL 拼接和分割的功能，但并不具有继承关系（既不是父子关系，也不是兄弟关系）。仅仅为了代码复用，生硬地
+抽象出一个父类出来，会影响到代码的可读性。如果不熟悉背后设计思路的同事，发现 Crawler 类和 PageAnalyzer 类继承同一个父类，而父类中定义的却只是 URL 相关的
+操作，会觉得这个代码写得莫名其妙，理解不了。这个时候，使用组合就更加合理、更加灵活。具体的代码实现如下所示：
+
+
+public class Url {
+  //...省略属性和方法
+}
+
+public class Crawler {
+  private Url url; // 组合
+  public Crawler() {
+    this.url = new Url();
+  }
+  //...
+}
+
+public class PageAnalyzer {
+  private Url url; // 组合
+  public PageAnalyzer() {
+    this.url = new Url();
+  }
+  //..
+}

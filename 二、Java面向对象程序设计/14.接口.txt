@@ -1,0 +1,615 @@
+**接口
+
+##接口的概念
+----接口就是公共的行为规范标准，大家在实现时，只要符合规范标准，就可以通用
+----在Java中，接口可以看成是：多个类的公共规范，是一种引用数据类型
+
+##语法规则
+----接口的定义格式与定义类的格式基本相同，将class关键字换成interface关键字，就定义了一个接口
+定义格式：
+public interface 接口名称{
+    //抽象方法
+    public abstract void method1();//public abstract是固定搭配，可以不写
+    public void method2();
+    abstract void method3();
+    void method4();
+    //注意：在接口中上述写法都是抽象写法，更推荐方式4，代码更简洁
+}
+----提示：
+---1.创建接口时，接口的命名一般以大写字母I开头
+---2.接口的命名一般使用"形容词词性"的单词
+---3.阿里编码规范中约定 接口中的方法和属性不要加任何修饰符号，保持代码的整洁性
+
+##接口使用
+----接口不能单独使用，必须要有一个"实现类"来"实现"该接口，实现接口中的所有抽象方法
+语法格式：
+public class 类名 implements 接口名称{
+    //···
+}
+----注意：子类和父类之间是extends继承关系，类和接口之间是implements实现关系
+测试实例：
+/*
+请实现笔记本电脑使用USB鼠标、USB键盘的例子
+1.USB接口：包含打开设备、关闭设备功能
+2.笔记本类：包含开机功能、关机功能、使用USB设备功能
+3.鼠标类：使用USB接口，并具备点击功能
+4.键盘类：实现USB接口，并具备输入功能
+ */
+interface  USB{
+    void openDevice();
+    void closeDevice();
+}
+class Mouse implements USB{
+
+    @Override
+    public void openDevice() {
+        System.out.println("打开鼠标");
+    }
+
+    @Override
+    public void closeDevice() {
+        System.out.println("关闭鼠标");
+    }
+    public void click(){
+        System.out.println("鼠标点击");
+    }
+}
+class keyBoard implements USB{
+
+    @Override
+    public void openDevice() {
+        System.out.println("打开键盘");
+    }
+
+    @Override
+    public void closeDevice() {
+        System.out.println("关闭键盘");
+    }
+    public void inPut(){
+        System.out.println("键盘输入");
+    }
+}
+class Computer{
+    public void powerOn(){
+        System.out.println("打开笔记本电脑");
+    }
+    public void powerOff(){
+        System.out.println("关闭笔记本电脑");
+    }
+    public void useDevice(USB usb){
+        usb.openDevice();
+        if(usb instanceof Mouse){
+            Mouse mouse=(Mouse) usb;
+            mouse.click();
+        }else if(usb instanceof keyBoard){
+            keyBoard keyBoard= (keyBoard) usb;
+            keyBoard.inPut();
+        }
+        usb.closeDevice();
+    }
+}
+public class TestUSB {
+    public static void main(String[] args) {
+        Computer computer=new Computer();
+        computer.powerOn();
+        computer.useDevice(new Mouse());
+        computer.useDevice(new keyBoard());
+        computer.powerOff();
+    }
+}
+
+##接口特性
+----1.使用interface来修饰接口
+----2.接口当中的成员方法，不能有具体的实现
+---(1).抽象方法：默认是public abstract的方法
+---(2).JDK1.8开始 允许有可以实现的方法，但是这个方法只能是default修饰的
+---(3).可以实现有一个静态方法
+----3.成员变量默认是public static final修饰的
+----4.接口不能被实例化
+----5.类和接口之间采用implements来实现多个接口
+----6.接口中的方法是不能在接口中实现的
+----7.重写接口方法时，不能使用默认的访问权限
+----8.子类重写抽象方法，必须用public修饰
+----9.接口类不能有静态代码块和构造方法
+----10.如果你不想实现接口的方法，那么就把这个类定义为抽象类。但是如果这个类被其它类继承 那么必须重写
+
+##实现多个接口
+在Java中，类和类之间是单继承的，一个类只能有一个父类，即Java中不支持多继承，但是一个类可以实现多个接口
+测试实例：
+interface IFlying{
+    void flying();
+}
+interface ISwimming{
+    void swimming();
+}
+interface IRunning{
+    void running();
+}
+class Animal {
+    public String name;
+    public int age;
+
+    public Animal(String name, int age) {
+        this.name=name;
+        this.age=age;
+    }
+
+    public void eat(){
+        System.out.println("吃饭！！！");
+    }
+}
+class Dog extends Animal implements IRunning,ISwimming{
+
+    public Dog(String name,int age){
+        super(name,age);
+    }
+    @Override
+    public void swimming() {
+        System.out.println(name+"正在游泳");
+    }
+
+    @Override
+    public void running() {
+        System.out.println(name+"正在跑");
+    }
+    @Override
+    public void eat() {
+        System.out.println(name+"正在吃饭！");
+    }
+}
+class Bird extends Animal implements IFlying{
+    public Bird(String name,int age){
+        super(name,age);
+    }
+    @Override
+    public void flying() {
+        System.out.println(name+"正在飞");
+    }
+    @Override
+    public void eat() {
+        System.out.println(name+"正在吃饭！");
+    }
+}
+class Duck extends Animal implements IFlying,ISwimming,IRunning{
+
+    public Duck(String name,int age){
+        super(name,age);
+    }
+    @Override
+    public void flying() {
+        System.out.println(name+"正在飞");
+    }
+
+    @Override
+    public void swimming() {
+        System.out.println(name+"正在游泳");
+    }
+
+    @Override
+    public void running() {
+        System.out.println(name+"正在跑");
+    }
+
+    @Override
+    public void eat() {
+        System.out.println(name+"正在吃饭！");
+    }
+}
+class Robot implements IRunning{
+
+    @Override
+    public void running() {
+        System.out.println("机器人正在跑");
+    }
+}
+public class Test4 {
+    public static void walk(IRunning iRunning){
+        iRunning.running();
+    }
+    public static void func(Animal animal){
+        animal.eat();
+    }
+    public static void main(String[] args) {
+        walk(new Dog("hello",10));
+        walk(new Duck("hello1",20));
+        walk(new Robot());
+        System.out.println("===========");
+        func(new Dog("hello",10));
+        func(new Duck("hello1",20));
+    }
+}
+
+
+##使用间的继承
+----类与接口之间的关系：
+--1.类与类之间是单继承的，直接父类只有一个。
+--2.类与接口之间是多实现的，一个类可以实现多个继承。
+--3.接口与接口之间是多继承的。
+测试实例：
+public interface MyInterface1 {
+    public abstract void method1();
+    public abstract void common();
+}
+public interface MyInterface2 {
+    public abstract void method2();
+    public abstract void common();
+}
+public interface MyInterface3 extends MyInterface1,MyInterface2{
+    public abstract void method3();
+}
+这个子接口当中一共有4个方法：
+method1来源于接口1，method2来源于接口2，common来源于接口1和2，method3来源于自己。
+----注意事项：
+--1.多个父接口当中的抽象方法如果重复，没关系。
+--2，多个父接口当中的默认方法如果重复，那么子接口必须进行默认方法的覆盖重写，而且要带着default关键字，因为这是子接口，不是实现类。
+
+##接口使用实例
+
+----给对象数组排序
+class Student{
+    private String name;
+    private int score;
+    public Student(String name,int score){
+        this.name=name;
+        this.score=score;
+    }
+
+    @Override
+    public String toString() {
+        return "["+this.name+":"+this.score+"]";
+    }
+}
+----在给定一个学生对象数组，对这个数组中的元素进行排序(按分数进行排序)
+Student[] students=new Student[]{
+                new Student("张三",95),
+                new Student("李四",96),
+                new Student("王五",97),
+                new Student("赵六",92),
+        };
+实现排序时用Comparable接口或Comparator接口
+测试实例：
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
+
+class Person{
+    public String name;
+    public int age;
+    public Person(String name,int age){
+        this.name=name;
+        this.age=age;
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+}
+class Student implements Comparable<Student>{
+    public int score;
+    public String name;
+    public Student(String name,int score){
+        this.name=name;
+        this.score=score;
+    }
+
+    @Override
+    public String toString() {
+        return "["+this.name+":"+this.score+"]";
+    }
+    @Override
+    public int compareTo(Student o) {
+        if(this.score-o.score>0){
+            return 1;
+        }else if(this.score-o.score<0){
+            return -1;
+        }else {
+            return 0;
+        }
+    }
+}
+//Comparator<Student>比较器，侵入性比较弱
+//Comparable<Student>对类的侵入性比较强
+class AgeComparator implements Comparator<Student>{
+    @Override
+    public int compare(Student o1, Student o2) {
+        return o1.score-o2.score;
+    }
+}
+class NameComparator implements Comparator<Student>{
+    @Override
+    public int compare(Student o1, Student o2) {
+        return o1.name.compareTo(o2.name);
+    }
+}
+public class Test5 {
+    public static void bubbleSort(Comparable[] array){
+        for(int i=0;i< array.length-1;i++){
+            for (int j = 0; j < array.length-1-i; j++) {
+                if(array[j].compareTo(array[j+1])>0){
+                    Comparable tmp=array[j];
+                    array[j]=array[j+1];
+                    array[j+1]=tmp;
+                }
+            }
+        }
+    }
+    public static void main(String[] args) {
+        Student[] students=new Student[]{
+                new Student("张三",95),
+                new Student("李四",96),
+                new Student("王五",97),
+                new Student("赵六",92)
+        };
+        //bubbleSort(students);//结果:[[赵六:92], [张三:95], [李四:96], [王五:97]]
+        NameComparator nameComparator=new NameComparator();
+        //Arrays.sort(students,nameComparator);//结果:[[张三:95], [李四:96], [王五:97], [赵六:92]]
+        AgeComparator ageComparator=new AgeComparator();
+        Arrays.sort(students,ageComparator);//结果:[[赵六:92], [张三:95], [李四:96], [王五:97]]
+        System.out.println(Arrays.toString(students));
+    }
+}
+
+##Clonable接口和深拷贝
+Object类中存在一个clone方法，调用这个方法可以创建一个对象”拷贝“。但是要想合法调用clone方法
+先实现Clonable接口，否则会抛出CloneNotSupportedException异常。
+
+protected native Object clone() throws CloneNotSupportedException;
+不同包需要通过super去访问，所以当前类中需重写clone()方法
+测试实例：
+class Person1 implements Cloneable {
+    public int id;
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    @Override
+    public String toString() {
+        return "Person1{" +
+                "id=" + id +
+                '}';
+    }
+}
+public class Ggbood {
+    public static void main(String[] args) throws CloneNotSupportedException {
+        Person1 person1=new Person1();
+        person1.id=99;
+        Person1 person2=(Person1) person1.clone();
+        System.out.println(person1);
+        System.out.println(person2);
+    }
+}
+深拷贝：
+深拷贝又成为深度拷贝，所拷贝的对象的内部的引用类型也需要实现clone()这个方法，
+测试实例：
+public class Main {
+    public static void main(String[] args){
+        Person p1=new Person(new Son());
+        try {
+            Person p2=(Person)p1.clone();
+            p2.setSonNum(44);
+            System.out.println(p1.getSonNum()+"===>"+p2.getSonNum());
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+    }
+
+class Person implements Cloneable{
+    private Son son;
+
+    public Person(Son son) {
+        this.son=son;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        Person per=null;
+        try {
+            per=(Person)super.clone();
+        } catch (CloneNotSupportedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        per.son=(Son)son.clone();
+        return  per;
+    }
+
+  
+    public void setSonNum(int num){
+        this.son.setNum(num);
+    }
+    public int getSonNum(){
+        return this.son.getNum();
+    }
+}
+
+
+
+class Son implements Cloneable{
+    private int num=10;
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+}
+结果为：
+10===>44
+这里就证明了深拷贝就会连引用类型也拷贝一份。
+
+浅拷贝：
+浅拷贝对于基本数据类型就是直接进行值传递，在内存的另一个空间内存放，修改这个值不会影响到拷贝源的值
+浅拷贝对于引用数据类型就是进行的是地址传递，并没有对该对象重新开辟一个内存空间进行存放，所以对于引用数据类型的浅拷贝就相当于两个引用指向了同一个内存地址，
+那么就显而易见了修改拷贝后的值就会影响到拷贝源的值
+测试实例：
+public class Main{
+	public static void main(String[] args){
+		Person p1=new Person("张三",24);
+		try{
+			Person p2=(Person)p1.clone();
+		}catch(CloneNotSupportedException e) {
+            e.printStackTrace();
+            }
+		System.out.println(p1.getName().equals(p2.getName());
+		p2.setName("李四");
+		System.out.println(p1.getName().equals(p2.getName());
+	}
+}
+
+
+class Person implements Cloneable{
+	private String name;
+	private int age;
+	public person(String name,int age){
+		this.name=name;
+		this.age=age;
+	}
+	public String getName(){
+		return this.name;
+	}
+	public void setName(String name){
+		this.name=name;
+	}
+
+	@override
+	public Object clone()throws CloneNotSupportedException{
+		return super.clone();//浅拷贝
+	}
+}
+结果是：
+true
+true
+这里证明浅拷贝不会拷贝引用类型指向的对象，只会拷贝引用，所以这两个对象的引用对象是同一个对象，修改就会发生改变，浅拷贝也就是一个封装性的赋值操作。
+
+总结：
+Object中的clone()执行的时候使用RTTI机制（run-time type identification)；
+动态找到目前正在调用clone（）方法的那个引用，根据它的大小申请内存空间，然后进行字段的赋值，将该对象的内存空间完全复制到新的空间去
+
+##抽象类和接口的区别
+----不同点：
+--1、接口只能定义抽象方法不能实现方法，抽象类既可以定义抽象方法，也可以实现方法。
+--2、单继承，多实现。接口可以实现多个，只能继承一个抽象类。
+--3、接口强调的是功能，具有什么能力。抽象类强调的是所属关系。
+--4、接口中的所有成员变量 为public static final（默认，变量也是属于全局变量）， 静态不可修改，当然必须初始化。接口中的所有方法都是
+public abstract 公开抽象的（public可不写）。而且不能有构造方法。抽象类就比较自由了，和普通的类差不多，可以有抽象方法也可以没有，
+可以有正常的方法，也可以没有。
+--5.Interface是为了把程序模块进行固化的契约,是为了降低偶合，abstractclass是为了把相同的东西提取出来,即重用
+
+
+**Object类
+ Object类是所有类的父类，也就是说任何一个类在定义时候如果没有明确的继承一个父类的话，那么它就是Object类的子类。
+
+##获取对象信息
+----如果要打印对象中的内容，可以直接重写Object类中的toString()方法
+//Object 类中的toString()方法实现
+    public String toString(){
+        return getClass().getName()+"@"+Integer.toHexString(hashCode());
+    }
+
+##对象比较的equals方法
+----在Java 中，==进行比较时
+--a.如果==左右两侧是基本类型变量，比较的变量中值是否相同
+--b.如果==左右两侧是引用类型变量，比较的是引用变量地址是否相同
+--c.如果要比较对象中内容，必须重写Object中的equals方法，因此equals方法默认也是按照地址比较的
+//Object类中的equals方法
+    public boolean equals(Object obj){
+        return (this==obj);//使用引用中的地址直接来进行比较
+    }
+class Person{
+    public String name;
+    public int age;
+    public Person(String name,int age){
+        this.name=name;
+        this.age=age;
+    }
+}
+public class Test5 {
+
+    public static void main(String[] args) {
+        Person p1=new Person("qwe",12);
+        Person p2=new Person("qwe",12);
+        int a=10,b=10;
+        System.out.println(a==b);//true
+        System.out.println(p1==p2);//false
+        System.out.println(p1.equals(p2));//false
+    }
+}
+Person类重写equals方法后比较
+@Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;//向下转型，比较属性值
+        return age == person.age && name.equals(person.name);
+    }
+结论：比较对象中内容是否相同时，一定要重写equals方法
+
+
+##hashcode方法
+
+回忆刚刚的toString()源码：
+public String toString(){
+        return getClass().getName()+"@"+Integer.toHexString(hashCode());
+    }
+我们看到了hashCode()这个方法，它帮我们算了一个具体的对象位置，这里面涉及数据结构。
+hashcode方法源码：public native int hashCode();
+该方法是一个native方法，底层是由C/C++代码写的。
+我们认为两个名字相同，年龄相同的对象将储存在同一位置，如果不重写hashCode()方法，我们可以看到
+实例代码：
+class Person{
+    public String name;
+    public int age;
+    public Person(String name,int age){
+        this.name=name;
+        this.age=age;
+    }
+
+}
+public class Test5 {
+
+    public static void main(String[] args) {
+        Person p1=new Person("qwe",12);
+        Person p2=new Person("qwe",12);
+        System.out.println(p1.hashCode());//668386784
+        System.out.println(p2.hashCode());//1329552164
+    }
+}
+注意事项：两个对象的hash值不一样
+像重写equals方法一样，我们也可以重写hashCode()方法
+import java.util.Objects;
+
+class Person{
+    public String name;
+    public int age;
+    public Person(String name,int age){
+        this.name=name;
+        this.age=age;
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+}
+public class Test5 {
+
+    public static void main(String[] args) {
+        Person p1=new Person("qwe",12);
+        Person p2=new Person("qwe",12);
+        System.out.println(p1.hashCode());//3484846
+        System.out.println(p2.hashCode());//3484846
+    }
+}
+注意事项：哈希值一样
+结论：
+----hashcode方法用来确定对象在内存中存储的位置是否相同
+----事实上hashCode()在散列表中才有用，在其他情况下没用。在散列表中hashCode()的作用是获取
+对象的散列码，进而确定该对象在散列表中的位置。
+
