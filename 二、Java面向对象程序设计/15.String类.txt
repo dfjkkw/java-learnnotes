@@ -1,0 +1,586 @@
+**String类的重要性
+在C语言中已经涉及到字符串了，但是在C语言中要表示字符串只能使用字符数组或者字符指针，可以使用标准库提供的
+字符串系列函数完成大部分操作，但是这种将数据和操作数据方法分离开的方式不符合面向对象的思想，而字符串应用又
+非常广泛，因此Java语言专门提供了String类。
+在开发和校招比试中，字符串也是常客，比如：
+字符串转整型数字
+字符串相加
+而且面试中也频繁被问到，比如：String、StringBuff和StringBuilding之间的区别等。
+
+**常用方法
+##字符串构造
+String类提供的构造方式非常多，常用的就以下三种：
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        //使用常量构造
+        String str1="hello";
+        System.out.println(str1);
+        //直接newString对象
+        String str2=new String("abc");
+        System.out.println(str2);
+        //使用字符数组进行构造
+        char[] Char={'g','a','o'};
+        String str3=new String(Char);
+        System.out.println(str3);
+    }
+}
+----注意：
+---1.String是引用类型，内部并不存储字符串本身
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        //s1和s2引用的是不同对象，s1和s3引用的是同一对象
+        String s1=new String("hello");
+        String s2=new String("world");
+        String s3=s1;
+        System.out.println(s3);
+        System.out.println(s1.length());//获取字符串长度---输出5
+        System.out.println(s1.isEmpty());//如果字符串长度为0，返回true，否则返回false
+    }
+}
+---2.在Java在中""引起来的也是String类型对象
+测试实例：
+//打印"hello"字符串(String对象)的长度
+        System.out.println("hello".length());
+
+##String对象比较
+字符串的比较常见操作之一，比如：字符串排序。Java中总共提供了4种方式
+----1.==比较是否引用同一个对象
+----2.boolean equals(Object anObject) 方法：按照字典序比较
+字典序：字符大小的顺序
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        String s1=new String("hello");
+        String s2=new String("world");
+        System.out.println(s1==s2);
+        System.out.println(s1.equals(s2));
+        int a=10;
+        int b=20;
+        System.out.println(a==b);//比较值
+    }
+}
+----3.int compareTo(String s)方法：按照字典序进行比较
+----4.int compareToIgnoreCase(String str)方法:与 compareTo方式相同，但是忽略大小写比较
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        String s1=new String("hello");
+        String s2=new String("Hello");
+        int ret=s1.compareTo(s2);
+        if(ret>0){
+            System.out.println("s1>s2");
+        }else if(ret==0){
+            System.out.println("s1==s2");
+        }else {
+            System.out.println("s1<s2");
+        }
+        int ret2=s1.compareToIgnoreCase(s2);
+        System.out.println(ret2);
+    }
+}
+
+##字符串查找
+字符串查找也是字符串中非常常见的操作，String类提供的常用查找的方法：
+         方法                                                                          功能
+char charAt(int index)                            返回index位置上字符，如果index为负数或者越界，抛出IndexOutboundsException异常
+int indexOf(int ch)                               返回ch第一次出现的位置，没有返回-1
+int indexOf(int ch,int fromIndex)                 从fromIndex位置开始找ch第一次出现的位置，没有返回-1
+int indexOf(String str)                           返回str第一次出现的位置，没有返回-1
+int indexOf(String str,int fromIndex)             从fromIndex位置开始找str第一次出现的位置，没有返回-1
+int lastindexOf(int ch)                           从后往前找，返回ch第一次出来的位置，没有返回-1
+int lastindexOf(int ch,int fromIndex)             从fromIndex位置开始找，重后往前找ch第一次出现的位置，没有返回-1
+int lastindexOf(String str)                       从后往前找，返回str第一次出来的位置，没有返回-1
+int lastindexOf(String str,int fromIndex)         从fromIndex位置开始找，重后往前找str第一次出现的位置，没有返回-1
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        String str="ababcdcf";
+        for (int i = 0; i < str.length(); i++) {
+            char ch=str.charAt(i);
+            System.out.print(ch+",");
+        }
+        System.out.println();
+        System.out.println(str.indexOf('c'));//从头开始找，第一个结束
+        System.out.println(str.indexOf('f',2));
+        System.out.println(str.indexOf("abc"));
+        System.out.println(str.indexOf("abc",4));
+    }
+}
+
+##转化
+----1.数值和字符串转化
+测试实例：
+class Student{
+    private String name;
+    private int age;
+    public Student(String name,int age){
+        this.name=name;
+        this.age=age;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+public class Test {
+    public static void main(String[] args) {
+        //数字转字符串
+        String str1=String.valueOf(123);
+        String str2=String.valueOf(12.3);
+        String str3=String.valueOf(true);
+        String str4=String.valueOf(new Student("Hanmeimei",18));
+        System.out.println(str1);
+        System.out.println(str2);
+        System.out.println(str3);
+        System.out.println(str4);
+        //字符串转数字
+        //注意：Integer、Double等是Java中的包装类型
+        int data1=Integer.parseInt("1234");
+        double data2=Double.parseDouble("12.34");
+        System.out.println(data1);
+        System.out.println(data2);
+    }
+}
+
+----2.大小写转化
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        String str="helloGT高";
+        String ret=str.toUpperCase();
+        System.out.println(ret);
+        String str2="ABCDEFG";
+        String ret2=str2.toLowerCase();
+        System.out.println(ret2);
+    }
+}
+----3.字符串转数组
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        String str="hello";
+        //字符串转数组
+        char[] chars=str.toCharArray();
+        for(int i=0;i< chars.length;i++){
+            System.out.print(chars[i]);
+        }
+        System.out.println();
+        //数组转字符串
+        String str2=new String(chars);
+        System.out.println(str2);
+    }
+}
+
+----4.格式化
+测试实例;
+public class Test {
+    public static void main(String[] args) {
+        String str=String.format("%d-%d-%d",2019,9,14);
+        System.out.println(str);
+    }
+}
+
+##字符串替换
+使用一个指定的新的字符串替换换掉已有的字符串数据，可用的方法如下：
+测试实例：
+                          方法                                      功能
+String replaceAll(String regex,String replacement)             替换所有的指定任务
+String replaceFirst(String regex,String replacement)           替换首个内容
+测试实例:
+public class Test {
+    public static void main(String[] args) {
+        String str="helloworlg";
+        System.out.println(str.replaceAll("l","_"));
+        System.out.println(str.replaceFirst("l","_" ));
+    }
+}
+----注意事项：由于字符串是不可变对象，替换不修改当前字符串，而是产生一个新的字符串
+
+##字符串拆分
+可以将一个完整的字符串按照指定的分隔符划分为若干个子字符串
+可用方法如下：
+            方法                                    功能
+String[] split(String regex)                将字符串全部拆分
+String[] split(String regex,int limit)      将字符串以指定的格式，拆分为limit组
+测试实例：
+
+----注意事项：
+---1.字符“l”，“*”，“+”都得加上转义字符，前面加上"\\"
+---2.而如果是"\",那么就得写成"\\\\"
+---3.如果一个字符串中有多个分割符，可以用"|"作为连字符
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        String str="zhangsan&wangwu";
+        String[] ret=str.split("&");
+        System.out.println(Arrays.toString(ret));
+        String str2="127.0.0.1";
+        String[] ret2=str2.split("\\.");
+        for(String x:ret2){
+            System.out.println(x);
+        }
+        String str3="127\\0\\0\\1";
+        String[] ret3=str3.split("\\\\");
+        for(String x:ret3){
+            System.out.println(x);
+        }
+        String str4="name=zhangsan&age=18";
+        String[] ret4=str4.split("=|&");
+        for(String x:ret4){
+            System.out.println(x);
+        }
+    }
+}
+----多次拆分
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        String str4="name=zhangsan&age=18";
+        String[] ret4=str4.split("&");
+        for(String x:ret4){
+            String[] ss=x.split("=");
+            for (String s:ss ) {
+                System.out.println(s);
+            }
+        }
+    }
+}
+
+##字符串截取
+从一个完整的字符串中截取一部分内容
+            方法                                                 功能
+String substring(int beginIndex)                         从指定索引截取到结尾
+String substring(int beginIndex,int endIndex)            截取部分内容
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        String str="helloworld";
+        String ret1=str.substring(1);
+        System.out.println(ret1);
+        String ret2=str.substring(1,4);
+        System.out.println(ret2);
+    }
+}
+
+----注意事项
+---1.索引从0开始
+---2.注意前闭后开区间的写法，substring(0,5)表示包含0号下标的字符，不包含5号下标
+
+##其他操作方法
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        String str="hello world";
+        String ret1=str.trim();//去除掉左右两边的空格
+        System.out.println(ret1);
+        boolean flg=str.contains("hello");//判断str中是否包含hello
+        System.out.println(flg);
+        String str1="asdfghjkl";
+        System.out.println(str1.endsWith("jkl"));//判断str1中是否以jkl结尾
+        System.out.println(str1.startsWith("asd"));//判断str1中是否以asd开头
+        
+    }
+}
+
+##字符串常量池
+----创建对象的思考
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        String str1="abcd";
+        String str2="abcd";
+        String str3=new String("abcd");
+        String str4=new String("abcd");
+        System.out.println(str1==str2);
+        System.out.println(str3==str4);
+        System.out.println(str1==str3);
+    }
+}
+在JDK1.6中，如果字符串常量池中已经存在该字符串对象，则直接返回池中此字符串对象的引用。否则，将此字符串的对象添加到字符串常量池
+中，然后返回该字符串对象的引用。
+在JDK1.7中，如果字符串常量池中已经存在该字符串对象，则返回池中此字符串对象的引用。否则，如果堆中已经有这个字符串对象了，则把此
+字符串对象的引用添加到字符串常量池中并返回该引用，如果堆中没有此字符串对象，则先在堆中创建字符串对象，再返回其引用。（这也说明，
+此时字符串常量池中存储的是对象的引用，而对象本身存储于堆中）
+于是代码中，String s = new String(“aa”);创建了两个“aa”对象，一个存在字符串常量池中，一个存在堆中。
+String s1 = s.intern(); 由于字符串常量池中已经存在“aa”对象，于是直接返回其引用，故s1指向字符串常量池中的对象。
+String s2 = “aa”; 此时字符串常量池中已经存在“aa”对象，所以也直接返回，故 s2和 s1的地址相同。②返回true。
+System.out.println(s == s2); 由于s的引用指向的是堆中的“aa”对象，s2指向的是常量池中的对象。故不相等，①返回false。
+String s3 = new String(“b”) + new String(“b”); 先说明一下，这种形式的字符串拼接，等同于使用StringBuilder的append方法把两个“b”
+拼接，然后调用toString方法，new出“bb”对象，因此“bb”对象是在堆中生成的。所以，这段代码最终生成了两个对象，一个是“b”对象存在于
+字符串常量池中，一个是 “bb”对象，存在于堆中，但是此时字符串常量池中是没有“bb”对象的。 s3指向的是堆中的“bb”对象。
+String s4 = s3.intern(); 调用了intern方法之后，在JDK1.6中，由于字符串常量池中没有“bb”对象，故创建一个“bb”对象，然后返回其引用。所以
+ s4 这个引用指向的是字符串常量池中新创建的“bb”对象。在JDK1.7中，则把堆中“bb”对象的引用添加到字符串常量池中，故s4和s3所指向的对象
+是同一个，都指向堆中的“bb”对象。
+String s5 = “bb”; 在JDK1.6中，指向字符串常量池中的“bb”对象的引用，在JDK1.7中指向的是堆中“bb”对象的引用。
+System.out.println(s3 == s5 ); 参照以上分析即可知道，在JDK1.6中③返回false（因为s3指向的是堆中的“bb”对象，s5指向的是字符串常量池中的
+“bb”对象），在JDK1.7中，③返回true（因为s3和s5指向的都是堆中的“bb”对象）。
+System.out.println(s4 == s5); 在JDK1.6中，s4和s5指向的都是字符串常量池中创建的“bb”对象，在JDK1.7中，s4和s5指向的都是堆中的“bb”对象。
+故无论JDK版本如何，④都返回true。
+str1、str2和str3都是简单的定义字符串，所有它们都是在字符串常量池中创建对象，然后引用指向字符串常量池中的对象。
+String str4 = str1 + str2; 这段代码和之前的 String s3 = new String(“b”) + new String(“b”); 原理相同，因此在堆中创建了一个“xyz”对象，然后
+str4指向堆中的这个对象。故⑤处返回false。（str3指向的是字符串常量池中的“xyz”对象）
+String str5 = str4.intern(); 由于字符串常量池中已经存在“xyz”对象，因此不论是JDK1.6还是JDK1.7，此处返回的都是字符串常量池中对象的引用。所以
+str5指向字符串常量池中的对象，故 ⑥返回true。
+String str6 = “xy” + “z”; 这段代码需要说明一下，它不同于两个字符串的引用拼接（如str1 + str2）。JVM会对其优化处理，也就是在编译阶段会把“xy”
+和“z”进行拼接成为“xyz”，存放在字符串常量池。因此，str6指向的是字符串常量池的对象，故⑦返回true。
+
+----字符串常量池(StringTable)
+字符串常量池在JVM中是StringTable类。实际是一个固定大小的HashTable(一种高效用来进行查找的数据结构)，不同JDK版本下字符串常量池的位置以及默认
+大小是不同的。
+JDK版本            字符串常量池位置               大小设置
+Java6              (方法区)永久代              固定大小：1009
+Java7                 堆中                    可设置，没有大小限制，默认大小：60013
+Java8                 堆中                    可设置，有范围限制，最小是1009
+关于方法区、堆等内存结构的具体局部，后序JVM中会给大家详细介绍
+
+----再谈String对象创建
+---1.通过使用字符串常量进行赋值
+--说明;
+-1.在使用字节码文件加载时，”hello“和”world“常量串已经创建好了，并保存在字符串常量池中
+-2.当使用String s1="hello";创建对象时，先在字符串常量池中找，找到了，将该字符串引用赋值给s1
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        String str1="abcd";
+        String str2="abcd";
+        System.out.println(str1==str2);
+    }
+}
+---2.通过new创建String类对象
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        char[] ch=new char[]{'a','b','c'};
+        String s1=new String(ch);//s1对象不在常量池中
+        //s1.intern();//调用之后，会将s1对象的引用放入到常量池中
+        String s2="abc";//"abc"在常量池中存在了，s2创建时直接用常量池中"abc"的引用
+        System.out.println(s1==s2);
+    }
+}
+注意：在Java6和java7、8中Intern的实现会有些许的差别
+----面试题：请解释String类中两种对象实例化的区别
+JDK1.8中
+---1.String str="hello"
+只会开辟一块堆内存空间，保存在字符串常量池中，然后str共享常量池中的String对象
+---2.String str=new String("hello")
+会开辟两块堆内存空间，字符串"hello"保存在字符串常量池中，然后用常量池中的String对象给新开辟的String对象赋值
+---3.String str=new String(new char[]{'h','e','l','l','o'})
+现在堆上创建一个String对象，然后利用copyof将重新开辟数组空间，将参数字符串数组中内容拷贝到String对象中
+
+##字符串的不可变性
+String类是一种不可变对象，字符串的内容是不可改变。字符串不可被修改，是因为
+----1.String类在设计时就是不可改变的，String类实现描述中已经说明了
+测试实例”
+public final class String
+    implements java.io.Serializable,Comparable<String>,CharSequence{
+    private final char value[];
+    private int hash;
+---String类中的字符实际保存在内部维护的value字符数组中。
+--1.String类被final修饰，表明该类不能被继承
+--2.value被final修饰，表明value自身的值不能改变，即不能引用其它字符数组，但是其引用空间中的内容可以修改
+----2.所有涉及到可能修改字符串内容的操作都是创建一个新对象，改变的是新对象
+比如replace方法：
+public String replace(char oldChar,char newChar){
+        if (oldChar!=newChar){
+            int len=value.length;
+            int i=-1;
+            char[] val=value;//avoid getfield opcode
+            while (++i<len) {
+                if (val[i] == oldChar) {
+                    break;
+                }
+            }
+            if(i<len){
+                char buf[]=new char[len];//在新空见上进行修改
+                for(int j=0;j<i;j++){
+                        buf[j]=val[j];
+                        while (i<len) {
+                            char c = val[i];
+                            buf[i] = (c == oldChar) ? newChar : c;
+                            i++;
+                        }
+                        return new String(buf,true);//如果要修改实际是创建了一个新的对像
+    }
+----【纠正】网上有些人说：字符串不可变是因为具内部保存字符的数组被final修饰了，因此不能改变。
+这种说法是错误的，不是因为String类自身，或者具内部value被fnal修饰而不能被修改。
+----final修饰类表明该类不想被继承，final修饰引用类型表明该引用变量不能引用其他对象，但是其引用对象中的内容是可以
+修改的。
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        final int array[]={1,2,3,4,5};
+        array[0]=100;
+        System.out.println(Arrays.toString(array));
+        //array=new int[]{4,5,6};//编译错误：java：无法为最终变量array分配值
+    }
+}
+----为什么String要设计成不可变的不可变对像的好处是什么)选学)到
+---1.方便实现字符串对像池如果Sng可变那么对象池需要考电写时烤贝的可题了.
+---2不可变对象是线程安全的
+---3.不可变对象更方便领存hash code,作为ey时可以更高的保存到HashMap中.
+
+##字符串修改
+----注意：尽量避免直接对String类型对象进行修改，因为String类是不能修改的，所有的修改都会创建新对象，效率非常低下。
+测试实例1：
+public class Test {
+    public static void main(String[] args) {
+        String str="hello";
+        str+=" world";
+        System.out.println(str);
+    }
+}
+测试实例2：
+public class Test {
+    public static void main(String[] args) {
+        long start =System.currentTimeMillis();
+        String s="";
+        for (int i = 0; i < 100000; i++) {
+            s+=i;
+        }
+        long end=System.currentTimeMillis();
+        System.out.println(end-start);
+
+        start=System.currentTimeMillis();
+        StringBuffer sbf=new StringBuffer("");
+        for(int i=0;i<100000;++i){
+            sbf.append(i);
+        }
+        end=System.currentTimeMillis();
+        System.out.println(end-start);
+
+        start=System.currentTimeMillis();
+        StringBuilder sbd=new StringBuilder("");
+        for(int i=0;i<100000;++i){
+            sbf.append(i);
+        }
+        end=System.currentTimeMillis();
+        System.out.println(end-start);
+    }
+}
+//输出
+// 2295
+//5
+//4
+----可以看到在对String类进行修改时，效率是非常慢的，因此：尽量避免对String的直接需要，如果要修改建议尽量使用StringBuffer或StringBuilder
+
+**StringBuilder和StringBuff
+----StringBuilder的介绍
+---由于String的不可更改特性，为了方便字符串的修改，Java中又提供了StringBuffer类和StringBuilder类。这两个类大部分功能是相同的，这里介绍
+StringBuilder常用的一些方法，其它需要用到的可参阅StringBuilder在线文档。
+              方法                                                                说明
+StringBuilder.append(String str)                      在尾部追加，相当于String的+=，可以追加boolean、char、char[]、double、float、int、
+                                                      long、Object、String、StringBuffer的变量
+char charAt(int index)                                获取index位置的字符
+int length()                                          获取字符串的长度
+int capacity()                                        获取底层保存字符串空间总的大小
+void ensureCapacity(int mininmumCapacity)             扩容
+void setCharAt(int index,char ch)                     将index位置的字符设置为ch
+int indexOf(String str)                               返回str第一次出现的位置
+int indexOf(String str,int fromIndex)                 从fromIndex位置开始找str第一次出现的位置
+int lastIndexOf(String str)                           返回str最后一次出现的位置
+int lastIndexOf(String str,int fromIndex)             从fromIndex位置开始找str最后一次出现的位置
+StringBuffer insert(int offset,String str)            在offset位置插入：八种基本类型&String类型&Object类型数据
+StringBuffer deleteCharAt(int index)                  删除index位置字符
+StringBuffer delete(int start,int end)                删除[start,end)区间内的字符
+StringBuffer replace(int start,int end,String str)   将[start,end)位置的字符替换为str
+String substring(int start)                          从start开始一直到末尾的字符以String的方式返回
+String substring(int start,int end)                  将[start,end)范围内的字符以String的方式返回
+StringBuff  reverse()                                反转字符串
+String toString()                                    将所有字符按照String的方式返回
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        StringBuilder stringBuilder=new StringBuilder("hello");
+        System.out.println(stringBuilder);
+        String s=stringBuilder.toString();
+        System.out.println(s);
+        stringBuilder.reverse();
+        System.out.println(stringBuilder);
+    }
+}
+----从上述例子可以看出：String和StringBuilder最大的区别在于String的内容无法修改，而StringBuffer的内容可以修改，频繁修改字符串的情况
+考虑使用StringBuilder。
+----注意：String和StringBuilder类不能直接转换。如果要想互相转换，可以采用如下原则：
+--1.String变为StringBuilder :利用StringBuilder的构造方法或append()方法
+--2.StringBuiler变为String:调用toString()方法
+
+----面试题：
+---1.String、StringBuffer、StringBuilder的区别
+--String的内容不可修改，StringBuffer与StringBuilder的内容可以修改
+--StringBuffer与StringBuilder大部分功能是相似的
+--StringBuffer采用同步处理，属于线程安全操作；而StringBuilder未采用同步处理，属于线程不安全操作
+---2.以下总共创建了多少个String对象【前提不考虑常量池之前是否存在】
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        String str=new String("ab");//会创建2个对象
+        String str1=new String("a")+new String("b");//会创建6个对象
+    }
+}
+
+##String类oj
+----1.第一个只出现一次的字符
+测试实例：
+class Solution{
+    public int firstUniqChar(String s){
+        int[] count=new int[26];
+        //统计每个字符出现的次数
+        for (int i = 0; i < s.length(); i++) {
+            count[s.charAt(i)]++;
+        }
+        //找第一个只出现一次的字符
+        for(int i=0;i<s.length();i++){
+            if(i==count[s.charAt(i)]){
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+----2.最后一个单词的长度
+public class Test {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        String str=sc.nextLine();
+        String[] s=str.split(" ");
+        System.out.println(s[s.length-1].length());
+    }
+}
+
+----3.检测字符串是否为回文数
+class Solution{
+    public boolean isEffective(char ch){
+        if(Character.isLetter(ch)||Character.isDigit(ch)){
+            return true;
+        }
+        return false;
+        //return Character.isLetterOrDigit(ch);
+    }
+    public boolean isPalindrome(String s){
+        s=s.toLowerCase();//全部整体转为小写字符
+        int left=0;
+        int right=s.length()-1;
+        while(left<right){
+            while(left<right&&!isEffective(s.charAt(left))){
+                left++;
+            }
+            //left下标一定是有效字符
+            while(left<right&&!isEffective(s.charAt(right))){
+                right--;
+            }
+            //right下标一定是有效字符
+            if(s.charAt(left)!=s.charAt(right)){
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+}
