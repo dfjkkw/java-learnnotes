@@ -1,0 +1,500 @@
+**异常的概念与体系结构
+##异常的概念
+----在Java中，将程序执行过程中发生的不正常行为称为异常。比如之前写代码时经常遇到的:
+---1.算数异常
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        System.out.println(10/0);
+    }
+}
+//运行结果：Exception in thread "main" java.lang.ArithmeticException: / by zero
+---2.数组越界异常
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        int[] arr={1,2,3};
+        System.out.println(arr[100]);
+    }
+}
+//运行结果：Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 100 out of bounds for length 3
+---3.空指针异常
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        int[] arr=null;
+        System.out.println(arr.length);
+    }
+}
+//运行结果：Exception in thread "main" java.lang.NullPointerException: Cannot read the array length because "arr" is null
+---4.输入不匹配异常
+测试实例：
+public class Test {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        System.out.println(n);
+    }
+}
+//输入：hello
+//运行结果：
+//输入不匹配异常
+//Exception in thread "main" java.util.InputMismatchException
+//源码当中的问题
+//	at java.base/java.util.Scanner.throwFor(Scanner.java:943)
+//	at java.base/java.util.Scanner.next(Scanner.java:1598)
+//	at java.base/java.util.Scanner.nextInt(Scanner.java:2263)
+//	at java.base/java.util.Scanner.nextInt(Scanner.java:2217)
+//你自己的问题
+//	at Test.main(Test.java:9)
+----从上述过程中可以看到，Java中不同类型的异常，都有与其对应的类来进行描述
+
+##异常的体系结构
+从图中可以看出：
+----1.Throwable：是异常体系的顶层类，其派生出两个重要的子类，Error和Expection
+----2.Error：指的是Java虚拟机无法解决的严重问题，比如：JVM的内部错误，资源耗尽等，典型代表：stackOverflowError和OutOfMemoryError，一旦发生回力乏术。
+----3.Expection：异常产生后程序员可以通过代码进行处理，是程序继续执行。比如：感冒，发烧。我们平时所说的异常就是Exception。
+
+##异常的分类
+----异常可能在编译时发生，也可能在程序运行时发生，根据发生的时机不同，可以将异常分为：
+---编译时异常
+--在程序编译期间发生的异常，称为编译时异常，也称为受检查异常(Checked Exception)
+---运行时异常
+--在程序执行期间发生的异常，称为运行时异常，也称为非受检查异常(Unchecked Exception)
+--RunTimeExpection以及子类对应的异常，都称为运行时异常。比如：NullPointerException、ArrayIndexOutOfBoundsException、
+ArithmeticException。
+--注意：编译时出现的语法性错误，不能称之为异常。例如将System.out.println拼写错了，写成了system.out.println。此时编译过程中
+就会出错，这是“编译期”出错。而运行时指的是程序已经编译通过得到class文件了，再由JVM执行过程中出现的错误。
+
+**异常的处理
+##防御式编程
+----错误在代码中是客观存在的，因此我们要让程序出现问题的时候及时通知程序员。主要的方式
+---1.LBYL：Look Before You Leap.在操作之前就做充分的检查。即：事前防御型。
+例子：boolean ret=false;
+        ret=登陆游戏();
+        if(!ret){
+            处理登陆游戏错误;
+            return;
+        }
+        ret=开始匹配();
+        if(!ret){
+            处理开始匹配错误;
+            return;
+        }
+        ret=游戏确认();
+        if(!ret){
+            处理游戏确认错误;
+            return;
+        }
+        ret=选择英雄();
+        if(!ret){
+            处理选择英雄错误;
+            return;
+        }
+        ret=载入游戏画面();
+        if(!ret){
+            处理载入游戏画面错误;
+            return;
+        }
+        ······
+缺陷：正常流程和错误处理流程代码混在一起，代码整体显得比较混乱。
+---2.EAFP：It's Easier to Ask Forgiveness than Permission.“事后获取原谅比事前获取许可更容易”。也就是先操作，
+遇到问题再处理。即：事后认错型。
+例子：
+try{
+            登陆游戏();
+            开始匹配();
+            游戏确认();
+            选择英雄();
+            载入游戏画面();
+            ······
+        }catch(登陆游戏异常){
+            处理登陆游戏异常;
+        }catch(开始匹配异常){
+            处理开始匹配异常;
+        }catch(游戏确认异常){
+            处理游戏确认异常;
+        }catch(选择英雄异常){
+            处理选择英雄异常;
+        }catch(载入游戏画面异常){
+            处理载入游戏画面异常;
+        }catch(······异常){
+            处理······异常;
+        }
+优势：正常流程和错误流程是分离开的，程序员更关注正常流程，代码更清晰，容易理解代码异常处理的核心思想就是EAFP。
+----在Java中，异常处理主要的5个关键字：throw、try、catch、final、throws
+
+##异常的抛出
+----在编写程序时，如果程序中出现错误，此时就需要将错误的信息告知给调用者，比如：参数检测。
+----在Java中，可以借助throw关键字，抛出一个指定的异常对象，将错误信息告知给调用者。具体语法如下：
+---throws new XXXException("异常产生的原因");
+----【需求】：实现一个获取数组中任意位置元素的方法。
+测试实例：
+public class Test {
+    public static int getElement(int[] array,int index){
+        if(null==array){
+            throw new NullPointerException("传递的数组为null");
+        }
+        if(index<0||index>= array.length){
+            throw new ArrayIndexOutOfBoundsException("传递的数组下标越界");
+        }
+        return array[index];
+    }
+    public static void main(String[] args) {
+        int[] array={1,2,3};
+        getElement(array,3);
+    }
+}
+----注意事项
+---1.throw必须写在方法体内部
+---2.抛出的对象必须是Exception或者Exception的子类对象
+---3.如果抛出的是RunTimeException或者RunTimeException的子类，则可以不用处理，直接交给JVM来处理。
+---4.如果抛出的是编译时异常，用户必须处理，否则无法编译
+---5.异常一旦抛出，其后的代码就不会执行
+
+##异常的获取
+----异常的捕获，也就是异常的具体处理方式，主要有两种：异常声明throws以及try-catch捕获处理。
+----异常声明throws
+---处在方法声明时参数列表之后，当方法中抛出编译时异常，用户不想处理该异常，此时就可以借助throws将异常
+抛给方法的调用者来处理。即当前方法不处理异常，提醒方法的调用者处理异常。
+---语法格式：修饰符  返回值类型    方法名(参数列表)   throws 异常类型1,异常类型2···{}
+---需求：加载时指定的配置文件config.ini
+测试实例：
+class Config{
+    File file;
+    public void openConfig(String filename) throws FileNotFoundException{
+        if(!filename.equals("config.ini")){
+            throw new FileNotFoundException("配置文件名字不对");
+        }
+        //打开文件
+    }
+    public void readConfig(){
+
+    }
+}
+---注意事项：
+--1throws必须跟在方法的参数列表之后
+--2.声明的异常必须是Exception或者Exception的子类
+--3.方法内部加果抛出了多个异常，throws之后必须跟多个异常类型，之间用逗号隔开，如果抛出多个异常美型具有父子
+关系，直接声明父类即可。
+测试实例：
+class Config {
+    File file;
+    //public void Openconfig(string filename)throws
+    //IOException,FileNotFoundException {
+        //FileNotFoundException继承自IOExcept1on
+        public void Openconfig (String filename)throws IOException {
+            if (filename.endsWith(".ini")) {
+                throw new IOException("文件不是.ini文件");
+            }
+            if (filename.equals("config.ini")) {
+                throw new FileNotFoundException("配适文件名字不对");
+            }
+        }
+        //打开文件
+        public void readConfig() {
+
+        }
+    }
+}
+--4.调用声明抛出异常的方法知时，调用者必须对该异常进行处理，或者继续使用throws抛出
+public static void main (String[] args) throws IOException{
+         Config config=new Config();
+         config.openConrig("config.ini");
+}
+将光标放在抛出异常方法上，alt+insert快速处理：
+public static void main(String[]args){
+         Config config = new Config();
+         config.openConrig("config.ini");
+}
+
+----try-catch捕获并处理
+---throws对异常并没有真正处理，而是将异常报告给抛出异常方法的调用者，由调用者处理。
+如果直正要对异常进行处理,就需要try-catch.
+---语法格式：
+public static void main(String[] args) {
+        try {
+            //将可能出现异常的代码放在这里
+        }catch(要捕获的异常类型 e) {
+            //如果try中的代码抛出异常了，此处catch捕获时异常类型与try中抛出的异常类型一致时，或者是try中抛出异常的基类时，就会被捕获到
+            //对异常就可以正常处理，处理完成后，就出try-atch结构，继续执行后序代码
+        }[catch(异常类型 e) {
+            //对异常进行处理
+        }finally {
+            //此处代码一定会被执行到
+        }]
+        //后序代码
+        //当异常被捕获到时，异常就被处理了，这里的后续代码一定会执行
+        //如果捕获了，由于捕获时类型不对，那就没有捕获到，这里的代码就不会被执行
+
+        注意：
+        1.[]中示可选项，可以添加，也可以不添加
+        2。try的代码可能会抛出异常，也可能不会
+        需求：读取配置文件，如果配置文件名字不星指定名字，抛出异常， 调用者进行异常处理
+---测试实例：
+        public class Config{
+        File file;
+        public void openConfig(String filename) throws FileNotFoundException(
+                if (!filename.equals ("config.ini") {
+                    throw new FileNotFoundException("配置文件名字不对");
+            }
+        //打开文件
+        public void readConsig(){
+                    
+        }
+            public static void main(String[] args) {
+                Config config=new Config();
+                try{
+                    config.openConfig("config.txt");
+                    System.out.println("文件打开成功");
+                }catch(IOException e){
+                    //异常的处理方式
+                    //System.out.println(e.getMessage());//只打印异常信息
+                    //System.out.println(e);//打印异常类型：异常信息
+                    e.printStackTrace();//打印信息最全面
+                }
+                //一旦异常被捕获处理了，此处的代码会执行
+                System.out.println("异常如果被处理了，这里的代码也可以执行");
+            }
+        }
+    }
+---关于异常的处理方式
+--异常的种类有很多，我们要根据不同的业务场景来决定，
+--对于比较严重的问题（例如和算钱相关的场），应该让程序直接崩溃，防止造成更严重的后果
+--对于不太严重的问题（大多数场），可以记录错误日志，并通过监控报警程序及时通知程序猿
+--对于可能会恢复的问题（和网络相关的场景），可以尝试进行重试，
+--在我们当前的代码中采取的是经过简化的第二种方式.我们记录的错误日志是出现异常的方法调用信息，能很快速的让我们找到
+出现异常的位置.以后在实际工作中我们会采取更完备的方式来记录异常信息
+---【注意事项】
+--1.try快内抛出异常位置之后的代码将不会被执行
+--2.如果抛出异常类型与cc小时异常类型不匹配，即异常不会被成功埔获，也就不会被处理，继续往外抛，直到VM收到后中断
+程序——异常是按照类型来埔获的
+测试实例：public static void main(String[] args) {
+        try {
+            int[] array = {1, 2, 3};
+            System.out.println(array[3]);
+            //此处会抛出数组越界异常
+        } catch (NullPointerException e) {//捕获时候捕获的是空指针异常-一真正的异常无法被捕获到
+            e.printStackTrace();
+        }
+        System.out.println("后序代码");
+        //Exception in thread "main"java.lang.ArrayIndexoutofBoundsException:3
+        //at day20210917.Arrayoperator.main(Arrayoperator.java:24)
+
+    }
+--3.try中可能会抛出多个不同的异常对象，则必须用多个catch来捕获——即多种异常，多次捕获
+测试实例：
+public static void main(String[] args){
+        int[]arr={1,2,3};
+        try {
+            System.out.println("before");
+            //arr null;
+            System.out.println(arr[100]);
+            System.out.println("after");
+        }catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("这是个数组下标越界异常");
+            e.printStackTrace();
+        }catch (NullPointerException e) {
+            System.out.println("这是个空指针异常");
+            e.printStackTrace();
+        }
+            System.out.println("after try catch");
+    }
+如果多个异常的处理方式是完全相同的，也可以写成这样：
+catch (ArrayIndexOutOfBoundsException|NullPointerException e) {
+            ······
+        }
+如果异常之间具有父子关系，一定是子类异常在前catch，父类异常在后catch，否则语法错误：
+public static void main(String[] args) {
+        int[] arr={1,2,3};
+        try{
+            System.out.println("before");
+            arr=null;
+            System.out.println(arr[100]);
+            System.out.println("after");
+        }catch (Exception e){//Exception可以捕获到所有异常
+            e.printStackTrace();
+        }catch (NullPointerException e){//永远都捕获执行到
+            e.printStackTrace();
+        }
+        System.out.println("after try catch");
+    }
+//运行结果：
+java: 已捕获到异常错误java.lang.NullPointerException
+---4.可以通过一个catch捕获所有异常，即多个异常，一次捕获(不推荐)
+测试实例：
+public static void main(String[] args) {
+        int[] arr={1,2,3};
+        try{
+            System.out.println("before");
+            arr=null;
+            System.out.println(arr[100]);
+            System.out.println("after");
+        }catch (Exception e){//Exception可以捕获到所有异常
+            e.printStackTrace();
+        }
+        System.out.println("after try catch");
+    }
+---由于Exception类是所有异常类的父类因此可以用这个类型表示铺捉所有异常
+备注：catch进行类型匹的加时候，不光会匹配相同类型的异常对象，也会捕捉目标异常类型的子类对象
+如刚才的代码，NullPointerException和ArrayIndexOutOfBoundsException都是Exception的子类，因
+此都被捕获到。
+
+----finally
+---在写程序时，有些特定的代码，不论程序是否发生，都需要执行，比如程序中打开的资源：网络连接、数据库连接、IO流等，在程序正常或者异常退出时，
+必须要对资源进行回收。另外，因为异常会引发程序的跳转，可能导致有些语句执行不到，finally就是解决这个问题的。
+语法格式：
+try{
+            //可能会发生异常的代码
+        }catch(异常类型 e){
+            //对捕获到的异常进行处理
+        }finally{
+            //此处的语句无论是否发生异常，都会被执行到，一般用来关闭资源
+        }
+        //如果没有抛出异常，或者异常被捕获处理了，这里的代码也会执行
+测试实例：
+public static void main(String[] args) {
+        try{
+            int[] array={1,2,3};
+            array[100]=10;
+            array[0]=10;
+        }catch(ArrayIndexOutOfBoundsException e){
+            System.out.println(e);
+        }finally{
+            System.out.println("finally中的代码一定会执行");
+        }
+        System.out.println("如果没有抛出异常，或者异常被处理了，try-catch后的代码也会执行");
+    }
+---问题：既然finally和try-catch-finally后的代码都会执行，那为什么还要有finally呢？
+---需求：实现getData方法，内部输入一个整形数字，然后将该数字返回，并在main方法中打印
+public static int getData(){
+        Scanner sc=null;
+        try{
+            sc=new Scanner(System.in);
+            int data=sc.nextInt();
+            return data;
+        }catch (InputMismatchException e){
+            e.printStackTrace();
+        }finally {
+            System.out.println("finally中代码");
+            //sc.close();
+        }
+        System.out.println("try-catch-finally之后代码");
+        if(null!=sc){
+            sc.close();
+        }
+        return 0;
+    }
+    public static void main(String[] args) {
+        int data=getData();
+        System.out.println(data);
+    }
+---上述程序，如果正常输入，成功接收输入后程序就返回了，try-catch-finally之后的代码根本没有执行，即输入流就没有释放，
+造成资源泄露。
+---注意：finally中的代码一定会执行的，一般在finally中进行一些资源清理的扫尾工作。
+finally执行的时机在方法返回之前(try或者catch中如果有return会在这个return之前执行finally)，但是如果finally中也存在return
+语句，那么就会执行finally中的return，从而不会执行到try原有的return。
+---一般我们不建议在finally中写return(被编译器当作一个警告)
+---面试题：
+--1.throw和throws的区别？
+一、说明：
+-1、throw 在方法体内使用，throws 在方法声明上使用；
+-2、throw 后面接的是异常对象，只能接一个。throws 后面接的是异常类型，可以接多个，多个异常类型用逗号隔开；
+-3、throw 是在方法中出现不正确情况时，手动来抛出异常，结束方法的，执行了 throw 语句一定会出现异常。而 throws 是用来声明当前方法有可能会出现
+某种异常的，如果出现了相应的异常，将由调用者来处理，声明了异常不一定会出现异常。
+二、相关解析
+-1、其中，throw 是用在某个方法的方法体内的，当我们认定某种情况不合理时，就可以创建异常对象，封装好异常信息，然后通过 throw 来抛出异常并终止该方法。
+-2、而 throws 是用在某个方法的方法声明上的，表示当前方法如果抛出了某些异常，将由调用者来进行异常处理。这种方式也可以让调用者知晓该对哪些异常进行
+处理。throws 声明的异常不一定会出现，只是一种可能。
+
+--2.finally中的语句一定会执行吗？
+答案：不会。
+情况分类：
+-1不抛出异常：try里面的代码、finally里面的代码、finally以后的代码都将正常执行，而catch里面的代码不会执行。
+-2抛出异常且被catch捕获：try里面的代码部分执行，catch里面的代码、finally里面的代码、finally以后的代码都将正常执行。
+-3抛出异常，但未被catch捕获：抛出异常的语句将会报错，在try中的抛出异常的语句后的语句将不会执行，由于异常未被捕获，故catch语句不执行，但是finally仍然
+会执行，在finally后面的语句由于程序已经报错停止，故将不会执行。
+不会执行finally中的代码的具体情况：
+第一种情况：程序未执行到 finally 块。
+-1.在执行 try 块之前直接 return，finally 块是不会执行的。
+-2.在执行 try 块之前程序直接报错，那么finally块自然就不会执行到了。
+-3.在执行try块时，调用System.exit(0)主动退出jvm。
+第二种情况：程序执行到 finally 块。
+-1.finally 块不含返回值。简单总结：若finally中无return，以try中的return为准。
+-2.finally 块含返回值。简单总结：finally块的方法有返回值时，要对于return出现的地方进行具体分析。在finally块中进行return操作的话，则方法整体的返回值就是
+finally块中的return返回值。如果在finally块之后的方法内return，则return的值就是进行完上面的操作后的return值
+
+
+##异常的处理流程
+----关于“调用钱”
+方法之间是存在相互调用关系的，这种调用关系们可以用“调用线”来描述，在JVM中有一块内存空间称为
+"虚拟机栈”专门存储方法之间的调用关系，当代码中出现异常的时候，我们就可以使用e.printStackTrace()
+的方式查看出现异常代码的调用栈。
+----如果本方法中没有合适的处理异常的方式，就会沿着调用栈向上传递
+测试实例：
+ public static void func(){
+        int[] arr={1,2,3};
+        System.out.println(arr[100]);
+    }
+    public static void main(String[] args) {
+        try{
+            func();
+        }catch(ArrayIndexOutOfBoundsException e){
+            e.printStackTrace();
+        }
+        System.out.println("after try catch");
+    }
+//测试结果：
+java.lang.ArrayIndexOutOfBoundsException: Index 100 out of bounds for length 3
+	at String类.Test.func(Test.java:25)
+	at String类.Test.main(Test.java:29)
+after try catch
+----如果向上一直传递都没有合适的方法处理异常，最终就会交给JVM处理，程序就会异常终止(和我们最开始使用try catch是一样的)
+测试实例：
+public static void func(){
+        int[] arr={1,2,3};
+        System.out.println(arr[100]);
+    }
+    public static void main(String[] args) {
+        func();
+        System.out.println("after try catch");
+    }
+//测试结果：
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 100 out of bounds for length 3
+	at String类.Test.func(Test.java:25)
+	at String类.Test.main(Test.java:28)
+----可以看到，程序终止了，没有执行到System.out.println("after try catch");这一行。
+----【异常处理流程总结】
+---1.程序先执行try中的代码
+---2.如果try中的代码出现异常，就会结束try中的代码，看和catch的异常类型是否匹配
+---3。如果找到匹配的异常类型，就会执行catch中的代码
+---4.如果没有找到匹配的异常类型，就会将异常向上传递到上层调用者
+---5.无论是否找到匹配的异常类型，finally中的代码都会被执行到(在该方法结束之前执行)
+---6.如果上层调用者也没有处理的了异常，就继续向上传递
+---7.一直到main方法也没有合适的代码处理异常，就会交给JVM来进行处理，此时程序就会异常终止
+
+**自定义异常类
+----Java中虽然已经内置了丰富的异常类，但是并不能完全表示实际开发中所遇到的一些异常，此时就需要维护符合我们实际情况的异常结构。
+----例如，我们实现一个用户登录功能
+class Login{
+    private String userName="admin";
+    private String passWord="123456";
+    public static void loginInfo(String userName,String passWord){
+        if(!userName.equals(userName)){
+            System.out.println("用户名错误！");
+            return;
+        }
+        if(!passWord.equals(passWord)){
+            System.out.println("密码错误！");
+            return;
+        }
+        System.out.println("登录成功！");
+    }
+
+    public static void main(String[] args) {
+        loginInfo("admin","123456");
+    }
+}
+----有些情况会根据自己的业务场景，抛出符合自己业务场景的异常。那么此时就需要我们自定义异常。如果只是通过简单的打印，是解决不了问题的。
+
+
